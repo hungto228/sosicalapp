@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1089153172164",
+    "firebase_url": "https://sosicalapp-45bcf.firebaseio.com",
+    "project_id": "sosicalapp-45bcf",
+    "storage_bucket": "sosicalapp-45bcf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1089153172164:android:80f52ef6bc675057c0ff91",
+        "android_client_info": {
+          "package_name": "com.example.ssocial_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1089153172164-9ti00vjv2j3dptimq21lcfh7714plp3e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ssocial_app",
+            "certificate_hash": "ef0a6def762f1db09f8094d001c265a1db798529"
+          }
+        },
+        {
+          "client_id": "1089153172164-q3opps8hhcb5ajlldn7s3ifrd2biktoa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhjEthWedjLcaj0R9y60HD8YMB5EQfjes"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1089153172164-q3opps8hhcb5ajlldn7s3ifrd2biktoa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
