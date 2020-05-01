@@ -30,7 +30,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Reset Password");
+        getSupportActionBar().setTitle("Đặt lại mật khẩu");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         
         ActionBar ab = getSupportActionBar();

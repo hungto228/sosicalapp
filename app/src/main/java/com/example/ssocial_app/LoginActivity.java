@@ -56,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setTitle("Login");
+        getSupportActionBar().setTitle("Đăng nhập");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // before auth
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

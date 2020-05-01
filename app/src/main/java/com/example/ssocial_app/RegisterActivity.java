@@ -41,7 +41,7 @@ public class RegisterActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
        setSupportActionBar(toolbar);
 // tlamf y hệt trren mạng luôn
-        getSupportActionBar().setTitle("Register");
+        getSupportActionBar().setTitle("Đăng Ký");
 //
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -53,7 +53,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
         pd=new ProgressDialog(this);
-        pd.setMessage("Resgister user...");
+        pd.setMessage("Đăng ký user...");
 
         btn_register.setOnClickListener(new View.OnClickListener() {
             @Override
