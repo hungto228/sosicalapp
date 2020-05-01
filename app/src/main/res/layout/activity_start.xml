@@ -22,16 +22,16 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
         android:id="@+id/login"
-
+android:textAllCaps="false"
         android:textColor="#DB0C0C"
-        android:text="login"/>
+        android:text="Đăng nhập"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
+android:textAllCaps="false"
         android:textColor="#DB0C0C"
         android:layout_marginTop="10dp"
         android:id="@+id/register"
-        android:text="register"/>
+        android:text="Đăng ký"/>
 
 </LinearLayout>
