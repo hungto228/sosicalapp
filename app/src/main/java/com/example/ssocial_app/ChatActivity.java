@@ -15,6 +15,7 @@ import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -42,6 +43,8 @@ import java.util.Locale;
 
 
 public class ChatActivity extends AppCompatActivity {
+    //animation
+    Animation animation;
     //firebase
     FirebaseAuth auth;
     FirebaseUser user;

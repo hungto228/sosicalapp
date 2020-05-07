@@ -66,6 +66,7 @@ public class AdapterUsers extends RecyclerView.Adapter<AdapterUsers.MyHoler> {
                 Intent intent=new Intent(context, ChatActivity.class);
                 intent.putExtra("hisUid",hisUid);
                 context.startActivity(intent);
+
                 Toast.makeText(context, ""+userEmail, Toast.LENGTH_SHORT).show();
             }
         });

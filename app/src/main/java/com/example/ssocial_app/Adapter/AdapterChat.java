@@ -1,12 +1,17 @@
 package com.example.ssocial_app.Adapter;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -33,6 +38,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class AdapterChat extends RecyclerView.Adapter<AdapterChat.Myholder> {
+    //animation
+    Animation animation;
+    private boolean on_attach = true;
+    long DURATION = 200;
+    //item chat
     private static final int MSG_TYPE_LEFT = 0;
     private static final int MSG_TYPE_RIGHT = 1;
     Context context;
@@ -40,6 +50,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.Myholder> {
     String imageUrl;
     //firebase user
     FirebaseUser firebaseUser;
+    ProgressDialog pd;
 
     public AdapterChat(Context context, List<ModelChat> chatList, String imageUrl) {
         this.context = context;
@@ -86,6 +97,9 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.Myholder> {
         holder.messageLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
+
+
+
                 //show delete message  dialog
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Xóa");
@@ -108,6 +122,10 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.Myholder> {
                 });
                 //create show dialog
                 builder.create().show();
+                //animation
+                animation= AnimationUtils.loadAnimation(context,R.anim.push_left_in);
+                animation.setDuration(500);
+                view.startAnimation(animation);
                 return true;
             }
         });
@@ -122,9 +140,59 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.Myholder> {
         } else {
             holder.mIsSeen.setVisibility(View.GONE);
         }
+        FromRightToLeft(holder.itemView,position);
     }
-//TODO: deleteMessage
+    //animaton fade
+//    private void setAnimation(View itemView, int i) {
+//        if(!on_attach){
+//            i = -1;
+//        }
+//        boolean isNotFirstItem = i == -1;
+//        i++;
+//        itemView.setAlpha(0.f);
+//        AnimatorSet animatorSet = new AnimatorSet();
+//        ObjectAnimator animator = ObjectAnimator.ofFloat(itemView, "alpha", 0.f, 0.5f, 1.0f);
+//        ObjectAnimator.ofFloat(itemView, "alpha", 0.f).start();
+//        animator.setStartDelay(isNotFirstItem ? DURATION / 2 : (i * DURATION / 3));
+//        animator.setDuration(500);
+//        animatorSet.play(animator);
+//        animator.start();
+//    }
+    //animation Right to lèt
+    private void FromRightToLeft(View itemView, int i) {
+        if(!on_attach){
+            i = -1;
+        }
+        boolean not_first_item = i == -1;
+        i = i + 1;
+        itemView.setTranslationX(itemView.getX() + 400);
+        itemView.setAlpha(0.f);
+        AnimatorSet animatorSet = new AnimatorSet();
+        ObjectAnimator animatorTranslateY = ObjectAnimator.ofFloat(itemView, "translationX", itemView.getX() + 400, 0);
+        ObjectAnimator animatorAlpha = ObjectAnimator.ofFloat(itemView, "alpha", 1.f);
+        ObjectAnimator.ofFloat(itemView, "alpha", 0.f).start();
+        animatorTranslateY.setStartDelay(not_first_item ? DURATION : (i * DURATION));
+        animatorTranslateY.setDuration((not_first_item ? 2 : 1) * DURATION);
+        animatorSet.playTogether(animatorTranslateY, animatorAlpha);
+        animatorSet.start();
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                on_attach=false;
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
+        super.onAttachedToRecyclerView(recyclerView);
+    }
+
+    //TODO: deleteMessage
     private void deleteMessage(int position) {
+        pd=new ProgressDialog(context);
+        pd.setMessage("Đang xóa");
         final String myUid=FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 //        get timestamp of click message

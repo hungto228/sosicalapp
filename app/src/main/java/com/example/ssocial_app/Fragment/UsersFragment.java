@@ -1,6 +1,7 @@
 package com.example.ssocial_app.Fragment;
 
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -53,6 +54,8 @@ public class UsersFragment extends Fragment {
     FirebaseUser user;
     FirebaseDatabase database;
     DatabaseReference reference;
+    //progress dialog
+    ProgressDialog pd;
 
 
     public UsersFragment() {
