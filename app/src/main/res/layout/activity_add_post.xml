@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddPostActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp"
+        android:orientation="vertical">
+<!--        editext input post title-->
+        <EditText
+            android:id="@+id/edt_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/editextstyle"
+            android:padding="10dp"
+            android:hint="Nhập tiêu đề."
+            android:singleLine="true"/>
+<!--        Imageview input post image-->
+        <ImageView
+            android:id="@+id/img_post"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="200dp"
+            android:background="@color/chat"
+            />
+
+
+<!--        Editext input post description-->
+        <EditText
+            android:id="@+id/edt_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/editextstyle"
+            android:padding="10dp"
+            android:inputType="textCapSentences|textMultiLine"
+            android:hint="Nhập miêu tả."
+            android:minHeight="120dp"
+            android:singleLine="true"/>
+<!--        Button publish post to firebase-->
+        <Button
+            android:id="@+id/btn_uploadPost"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="Đăng"
+            android:textAllCaps="false"/>
+
+
+    </LinearLayout>
+
+</ScrollView>

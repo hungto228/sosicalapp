@@ -1,6 +1,7 @@
 package com.example.ssocial_app;
 
 import android.annotation.SuppressLint;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import java.util.HashMap;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -30,7 +32,7 @@ public class RegisterActivity extends AppCompatActivity {
     ProgressDialog pd;
     FirebaseAuth auth;
     DatabaseReference reference;
-
+ActionBar actionBar;
     //đoạn set màu đâu
     //
     @SuppressLint("WrongViewCast")
@@ -38,12 +40,13 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
        setSupportActionBar(toolbar);
 // tlamf y hệt trren mạng luôn
         getSupportActionBar().setTitle("Đăng Ký");
-//
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+////
+       getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
         username = findViewById(R.id.username);
@@ -69,6 +72,12 @@ public class RegisterActivity extends AppCompatActivity {
                 } else {
                     register(txt_username, txt_email, txt_password);
                 }
+            }
+        });
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(RegisterActivity.this,StartActivity.class));
             }
         });
     }

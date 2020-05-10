@@ -22,39 +22,46 @@ public class ResetPasswordActivity extends AppCompatActivity {
     Button btn_reset;
 
     FirebaseAuth firebaseAuth;
+    ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
-
+//        actionBar = getSupportActionBar();
+//        actionBar.setTitle("Đặt lại mật khẩu");
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Đặt lại mật khẩu");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        
-        ActionBar ab = getSupportActionBar();
 
-        ab.setDisplayHomeAsUpEnabled(true);
+//        ActionBar ab = getSupportActionBar();
+//
+//        ab.setDisplayHomeAsUpEnabled(true);
         mSendemail = findViewById(R.id.send_email);
-       // send_email.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        // send_email.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         btn_reset = findViewById(R.id.btn_reset);
 
         firebaseAuth = FirebaseAuth.getInstance();
-
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+             startActivity(new Intent(ResetPasswordActivity.this,LoginActivity.class));
+            }
+        });
         btn_reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String email = mSendemail.getText().toString();
 
 
-                if (email.equals("")){
+                if (email.equals("")) {
                     Toast.makeText(ResetPasswordActivity.this, "Tất cả được yêu cầu!", Toast.LENGTH_SHORT).show();
                 } else {
                     firebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()){
+                            if (task.isSuccessful()) {
                                 Toast.makeText(ResetPasswordActivity.this, "Hãy xem Email!", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(ResetPasswordActivity.this, LoginActivity.class));
                             } else {

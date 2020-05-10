@@ -2,7 +2,10 @@ package com.example.ssocial_app.Fragment;
 
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.ssocial_app.Adapter.AdapterUsers;
 import com.example.ssocial_app.MainActivity;
@@ -66,6 +70,7 @@ public class UsersFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_users, container, false);
         auth = FirebaseAuth.getInstance();
@@ -161,6 +166,17 @@ public class UsersFragment extends Fragment {
             }
         });
     }
+    private void checkUserStatus() {
+        user=auth.getCurrentUser();
+        if(user!=null)
+        {
+
+        }else {
+            startActivity(new Intent(getActivity(), MainActivity.class));
+            getActivity().finish();
+        }
+
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -171,8 +187,10 @@ public class UsersFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_search , menu);
+        //hide add post icon form fragment
+        menu.findItem(R.id.menu_Spost).setVisible(false);
         //searchview
-        MenuItem menuItem=menu.findItem(R.id.search);
+        MenuItem menuItem=menu.findItem(R.id.menu_Ssearch);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
         //search    listenner
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -202,7 +220,7 @@ public class UsersFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
        int id=item.getItemId();
-       if(id==R.id.logout)
+       if(id==R.id.menu_Mlogout)
        {auth.signOut();
        checkUserStatus();
 
@@ -211,17 +229,7 @@ public class UsersFragment extends Fragment {
         return super.onOptionsItemSelected(item );
     }
 
-    private void checkUserStatus() {
-        user=auth.getCurrentUser();
-        if(user!=null)
-        {
 
-        }else {
-            startActivity(new Intent(getActivity(), MainActivity.class));
-            getActivity().finish();
-        }
-
-    }
 }
 
 

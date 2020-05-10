@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,8 +14,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.widget.EditText;
@@ -26,6 +26,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.ssocial_app.Adapter.AdapterChat;
 import com.example.ssocial_app.Model.ModelChat;
+import com.example.ssocial_app.Model.ModelUsers;
+import com.example.ssocial_app.Notifications.APIService;
+import com.example.ssocial_app.Notifications.Client;
+import com.example.ssocial_app.Notifications.Data;
+import com.example.ssocial_app.Notifications.Response;
+import com.example.ssocial_app.Notifications.Sender;
+import com.example.ssocial_app.Notifications.Token;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -43,6 +50,7 @@ import java.util.Locale;
 
 
 public class ChatActivity extends AppCompatActivity {
+    static final String TAG="Chat Activity";
     //animation
     Animation animation;
     //firebase
@@ -55,7 +63,7 @@ public class ChatActivity extends AppCompatActivity {
     Toolbar toolbar;
     RecyclerView recyclerView;
     ImageView imgProfile;
-    TextView mName, mStatusUser;
+    TextView mNameTv, mStatusUser;
     EditText mMessageEdt;
     ImageButton imgBtnSend;
     //checking if use  has seen message or not
@@ -67,6 +75,9 @@ public class ChatActivity extends AppCompatActivity {
     String hisUid;
     String myUid;
     String hisImage;
+
+    APIService apiService;
+    boolean notify = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +91,7 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.users_recyclerview);
         imgProfile = findViewById(R.id.img_profile);
         imgBtnSend = findViewById(R.id.imgBtn_send);
-        mName = findViewById(R.id.tv_name);
+        mNameTv = findViewById(R.id.tv_name);
         mStatusUser = findViewById(R.id.tv_statusUser);
         mMessageEdt = findViewById(R.id.edt_message);
         // Linearlayout for recycleview
@@ -89,6 +100,8 @@ public class ChatActivity extends AppCompatActivity {
         //recyclerview properties
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
+        //create api service
+        apiService = Client.getRetrofit("https://fcm.googleapis.com/").create(APIService.class);
 
         Intent intent = getIntent();
         hisUid = intent.getStringExtra("hisUid");
@@ -109,10 +122,9 @@ public class ChatActivity extends AppCompatActivity {
                     hisImage = "" + ds.child("image").getValue();
                     String typingStatus = "" + ds.child("typing").getValue();
                     //check typing status
-                    if(typingStatus.equals(myUid)){
+                    if (typingStatus.equals(myUid)) {
                         mStatusUser.setText("Đang nhập ...");
-                    }
-                    else {
+                    } else {
                         //get values of online status
                         String onlineStatus = "" + ds.child("onlinestatus").getValue();
                         if (onlineStatus.equals("online")) {
@@ -120,16 +132,16 @@ public class ChatActivity extends AppCompatActivity {
                         } else {
                             //convert  timestamp to proper time date
                             // convert timestamp to dd/mm/yy
-                            Calendar calendar =Calendar.getInstance(Locale.CANADA);
+                            Calendar calendar = Calendar.getInstance(Locale.CANADA);
                             calendar.setTimeInMillis(Long.parseLong(onlineStatus));
-                            String datetime= DateFormat.format("dd/MM/yyyy hh:mm a",calendar).toString();
-                            mStatusUser.setText("Nhìn thấy lần cuối từ "+datetime);
+                            String datetime = DateFormat.format("dd/MM/yyyy hh:mm a", calendar).toString();
+                            mStatusUser.setText("Nhìn thấy lần cuối từ " + datetime);
                         }
                     }
 
 
                     //set data
-                    mName.setText(name);
+                    mNameTv.setText(name);
 
                     try {// image received,  set into image view toolbar
                         Glide.with(getApplicationContext()).load(hisImage).
@@ -148,6 +160,7 @@ public class ChatActivity extends AppCompatActivity {
         imgBtnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                notify = true;
                 //get text frorm editext
                 String message = mMessageEdt.getText().toString().trim();
                 //check text is empty
@@ -158,6 +171,8 @@ public class ChatActivity extends AppCompatActivity {
                     //text is not emptjy
                     sendMessage(message);
                 }
+                //reset editext after sending message
+                mMessageEdt.setText("");
             }
         });
         readMessage();
@@ -171,12 +186,12 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-if(charSequence.toString().length()==0){
-    checkTypingStatus("no");
+                if (charSequence.toString().length() == 0) {
+                    checkTypingStatus("no");
 
-}else {
-    checkTypingStatus(hisUid);// uid of receiver
-}
+                } else {
+                    checkTypingStatus(hisUid);// uid of receiver
+                }
             }
 
             @Override
@@ -243,7 +258,7 @@ if(charSequence.toString().length()==0){
     }
 
     //TODO: send message
-    private void sendMessage(String message) {
+    private void sendMessage(final String message) {
         reference = FirebaseDatabase.getInstance().getReference();
 
         String timeStamp = String.valueOf(System.currentTimeMillis());
@@ -255,8 +270,60 @@ if(charSequence.toString().length()==0){
         hashMap.put("timestamp", timeStamp);
         hashMap.put("isseen", false);
         reference.child("Chats").push().setValue(hashMap);
-        //reset editext after sending message
-        mMessageEdt.setText("");
+
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(myUid);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ModelUsers modelUsers = dataSnapshot.getValue(ModelUsers.class);
+                if (notify) {
+
+                    sendNotification(hisUid, modelUsers.getUsername(), message);
+
+                }
+                notify = false;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    //TODO: sendnotification on chatActivity
+    private void sendNotification(final String hisUid, final String username, final String message) {
+        DatabaseReference allTokens = FirebaseDatabase.getInstance().getReference("Tokens");
+        Query query = allTokens.orderByKey().equalTo(hisUid);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    Token token = ds.getValue(Token.class);
+                    Data data = new Data(myUid, username + ":"+ message, "Có tin nhắn mới", hisUid, R.drawable.ic_image_default);
+
+                    Sender sender = new Sender(data, token.getToken());
+                    apiService.sendNotification(sender).enqueue(new Callback<Response>() {
+                        @Override
+                        public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
+                            Toast.makeText(ChatActivity.this, "" + response.message(), Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onFailure(Call<Response> call, Throwable t) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void checkOnlineStatus(String status) {
@@ -267,6 +334,7 @@ if(charSequence.toString().length()==0){
         reference.updateChildren(hashMap);
 
     }
+
     private void checkTypingStatus(String typing) {
         reference = FirebaseDatabase.getInstance().getReference("Users").child(myUid);
         HashMap<String, Object> hashMap = new HashMap<>();
@@ -276,24 +344,24 @@ if(charSequence.toString().length()==0){
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        //   menu.findItem(R.id.search).setVisible(false);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.logout) {
-            auth.signOut();
-            checkUserStatus();
-
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu, menu);
+//        //   menu.findItem(R.id.search).setVisible(false);
+//        return super.onCreateOptionsMenu(menu);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//        if (id == R.id.logout) {
+//            auth.signOut();
+//            checkUserStatus();
+//
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
     private void checkUserStatus() {
         user = auth.getCurrentUser();
@@ -308,9 +376,10 @@ if(charSequence.toString().length()==0){
 
 
     }
+
     @Override
     protected void onStart() {
-          checkUserStatus();
+        checkUserStatus();
         //set online
         checkOnlineStatus("online");
         super.onStart();

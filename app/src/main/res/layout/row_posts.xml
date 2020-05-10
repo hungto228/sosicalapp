@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="3dp"
+    app:cardUseCompatPadding="true"
+    app:contentPadding="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/img_uPicture"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_chat_send"
+                />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1">
+                <TextView
+                    android:id="@+id/tv_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:textColor="@color/Black"
+                    android:text="name"/>
+                <TextView
+                    android:id="@+id/tv_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:textColor="@color/Black"
+                    android:text="time"/>
+            </LinearLayout>
+            <ImageButton
+                android:id="@+id/btn_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:src="@drawable/ic_more_back_ho"
+                ></ImageButton>
+
+
+        </LinearLayout>
+        <TextView
+            android:id="@+id/tv_Ptitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:text="tittle"
+            android:autoLink="all"
+            />
+        <TextView
+            android:id="@+id/tv_Pdescripsion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Black"
+            android:text="descripsion"/>
+        <ImageView
+            android:id="@+id/img_pPicture"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:background="@color/white"/>
+        <TextView
+            android:id="@+id/tv_Plike"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:textColor="@color/design_default_color_error"
+            android:text="10 k Likes"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#F5F0F0"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center">
+            <Button
+                android:id="@+id/btn_PLike"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Like"
+                android:drawableLeft="@drawable/ic_like_back"
+                android:background="@color/white"
+                android:padding="10dp"
+                android:drawableStart="@drawable/ic_like_back"
+                android:layout_weight="1"/>
+            <Button
+                android:id="@+id/btn_Pcomment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="comment"
+                android:drawableLeft="@drawable/ic_comment_back"
+                android:background="@color/white"
+                android:padding="10dp"
+                android:drawableStart="@drawable/ic_comment_back"
+                android:layout_weight="1"/>
+            <Button
+                android:id="@+id/btn_Pshare"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_share_back"
+                android:background="@color/white"
+                android:padding="10dp"
+                android:drawableStart="@drawable/ic_share_back"
+                android:text="share"
+
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/search"
+    <item android:id="@+id/menu_Ssearch"
         app:showAsAction="always"
         android:title="Tìm kiếm"
         android:icon="@drawable/ic_search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"/>
+    <item
+        android:id="@+id/menu_Spost"
+        android:title="thêm bài"
+        android:icon="@drawable/ic_add_white"
+        app:showAsAction="always"/>
 </menu>

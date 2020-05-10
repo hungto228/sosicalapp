@@ -22,6 +22,9 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -32,7 +35,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.ssocial_app.AddPostActivity;
 import com.example.ssocial_app.R;
+import com.example.ssocial_app.SplashScreen;
+import com.example.ssocial_app.StartActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -48,6 +54,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.security.Permissions;
 import java.util.HashMap;
 
 import static android.app.Activity.RESULT_OK;
@@ -103,7 +110,9 @@ public class ProfileFragment extends Fragment {
         database = FirebaseDatabase.getInstance();
         reference = database.getReference("Users");
         storageReference = getInstance().getReference();//firebase Storage reference
-
+//init  permissions array
+        cameraPermissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        storagePermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
         //init
         imgAvatar = view.findViewById(R.id.img_avatar);
         imgCover = view.findViewById(R.id.img_cover);
@@ -135,7 +144,7 @@ public class ProfileFragment extends Fragment {
                         Glide.with(getContext()).load(image).into(imgAvatar);
                     } catch (Exception e) {
                         //if exception getting then image dafault
-                        Glide.with(getContext()).load(R.drawable.ic_image_default).into(imgAvatar);
+                      //  Glide.with(getContext()).load(R.drawable.ic_image_default).into(imgAvatar);
                     }
                     try {
                         Glide.with(getContext()).load(cover).into(imgCover);
@@ -269,12 +278,12 @@ public class ProfileFragment extends Fragment {
         boolean result = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
                 == (PackageManager.PERMISSION_GRANTED);
         return result;
-    }
+}
 
     private void reaquestStoragePermission() {
         //request runtime storage permission, in top
         // ActivityCompat.requestPermissions(getActivity(), storagePermissions, STORAGE_REQUEST_CODE);
-        requestPermissions(storagePermissions, STORAGE_REQUEST_CODE);
+       requestPermissions(storagePermissions, STORAGE_REQUEST_CODE);
 
 
     }
@@ -314,15 +323,15 @@ public class ProfileFragment extends Fragment {
             break;
             case STORAGE_REQUEST_CODE: {
                 if (grantResults.length > 0) {
-                    if (grantResults.length > 0) {
-                        boolean storageAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+
+                        boolean storageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                         if (storageAccepted) {
                             pickFromGallery();
                         } else {
                             Toast.makeText(getActivity(), "Gallery  cần thiết", Toast.LENGTH_SHORT).show();
                         }
-                    } else {
-                    }
+
+
                 }
             }
             break;
@@ -463,6 +472,81 @@ public class ProfileFragment extends Fragment {
         });
         builder.create().show();
 
+    }
+
+
+
+    private void checkUserStatus() {
+        FirebaseUser user;
+        user=auth.getCurrentUser();
+        if(user!=null)
+        {
+
+        }else {
+            startActivity(new Intent(getActivity(), StartActivity.class));
+            getActivity().finish();
+        }
+
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);//show menu in option in fragment
+        super.onCreate(savedInstanceState);
+    }
+    //inflate option menu
+
+
+     @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        //inflating menu
+        inflater.inflate(R.menu.menu_profile,menu);
+menu.findItem(R.id.menu_Mexit).setVisible(false);
+         menu.findItem(R.id.menu_Mlogout).setVisible(false);
+         menu.findItem(R.id.menu_Mpost).setVisible(false);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+        @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.menu_Plogout:
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(getContext(), StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                return true;
+            case R.id.menu_Pexit:
+                // start main
+                Intent intent = new Intent(getContext(), SplashScreen.class);
+                startActivity(intent);
+
+
+                Intent startMain = new Intent(Intent.ACTION_MAIN);
+                startMain.addCategory(Intent.CATEGORY_HOME);
+                startActivity(startMain);
+                getActivity().finish();
+                return true;
+            case  R.id.menu_Ppost:
+                    startActivity(new Intent(getContext(), AddPostActivity.class));
+                    return true;
+            default:
+                break;
+                }
+        return false;
+    }
+    //handle menu item click
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        //get item id
+        int id=item.getItemId();
+        if(id==R.id.menu_Plogout){
+            auth.signOut();
+            checkUserStatus();
+
+        }
+        if(id==R.id.menu_Ppost){
+            startActivity(new Intent(getActivity(), AddPostActivity.class));
+        }
+        return super.onContextItemSelected(item);
     }
 
 

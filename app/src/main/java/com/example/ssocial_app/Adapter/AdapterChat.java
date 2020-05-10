@@ -41,7 +41,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.Myholder> {
     //animation
     Animation animation;
     private boolean on_attach = true;
-    long DURATION = 200;
+    long DURATION = 150;
     //item chat
     private static final int MSG_TYPE_LEFT = 0;
     private static final int MSG_TYPE_RIGHT = 1;
@@ -65,6 +65,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.Myholder> {
         //layout row_chat_left for receiver , row_layout_chat_right for sender
         if (viewType == MSG_TYPE_RIGHT) {
             View view = LayoutInflater.from(context).inflate(R.layout.row_chat_right, parent, false);
+
             return new Myholder(view);
 
         } else {
@@ -73,7 +74,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.Myholder> {
         }
 
     }
-
+//TODO: onBindView AdapterChat
     @Override
     public void onBindViewHolder(@NonNull Myholder holder, final int position) {
 //get data
@@ -141,6 +142,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.Myholder> {
             holder.mIsSeen.setVisibility(View.GONE);
         }
         FromRightToLeft(holder.itemView,position);
+
     }
     //animaton fade
 //    private void setAnimation(View itemView, int i) {

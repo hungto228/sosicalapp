@@ -1,10 +1,14 @@
 package com.example.ssocial_app.Adapter;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +25,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class AdapterUsers extends RecyclerView.Adapter<AdapterUsers.MyHoler> {
+    public static final String TAG="AdapterUsers ";
+    //animation
+    Animation animation;
+    private boolean on_attach = true;
+    long DURATION = 200;
 
     Context context;
     AdapterUsers adapterUsers;
@@ -40,7 +49,7 @@ public class AdapterUsers extends RecyclerView.Adapter<AdapterUsers.MyHoler> {
 
         return new MyHoler(view);
     }
-
+    //TODO: onBindView AdapterUser
     @Override
     public void onBindViewHolder(@NonNull MyHoler holder, int position) {
        //get data
@@ -51,6 +60,7 @@ public class AdapterUsers extends RecyclerView.Adapter<AdapterUsers.MyHoler> {
         //set data
         holder.mNameTV.setText(userName);
         holder.mEmailTV.setText(userEmail);
+        Log.d(TAG, "set data: ");
         try{
 //            RequestOptions requestOptions = new RequestOptions();
 //            requestOptions.placeholder(R.drawable.ic_image_default1);
@@ -70,7 +80,23 @@ public class AdapterUsers extends RecyclerView.Adapter<AdapterUsers.MyHoler> {
                 Toast.makeText(context, ""+userEmail, Toast.LENGTH_SHORT).show();
             }
         });
-
+setAnimation(holder.itemView,position);
+    }
+    //animation fade
+        private void setAnimation(View itemView, int i) {
+        if(!on_attach){
+            i = -1;
+        }
+        boolean isNotFirstItem = i == -1;
+        i++;
+        itemView.setAlpha(0.f);
+        AnimatorSet animatorSet = new AnimatorSet();
+        ObjectAnimator animator = ObjectAnimator.ofFloat(itemView, "alpha", 0.f, 0.5f, 1.0f);
+        ObjectAnimator.ofFloat(itemView, "alpha", 0.f).start();
+        animator.setStartDelay(isNotFirstItem ? DURATION / 2 : (i * DURATION / 3));
+        animator.setDuration(500);
+        animatorSet.play(animator);
+        animator.start();
     }
 
     @Override

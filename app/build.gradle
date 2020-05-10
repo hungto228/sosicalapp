@@ -30,10 +30,10 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     //firebase
-    implementation 'com.google.firebase:firebase-messaging:20.1.5'
-    implementation 'com.google.firebase:firebase-database:19.2.1'
+    implementation 'com.google.firebase:firebase-messaging:20.1.6'
+    implementation 'com.google.firebase:firebase-database:19.3.0'
     implementation 'com.google.firebase:firebase-storage:19.1.1'
-    implementation 'com.google.firebase:firebase-auth:19.3.0'
+    implementation 'com.google.firebase:firebase-auth:19.3.1'
     // material
     implementation 'com.google.android.material:material:1.1.0'
     //matarialEdittext
@@ -44,6 +44,9 @@ dependencies {
     implementation 'com.rengwuxian.materialedittext:library:2.1.4'
     //glide library
     implementation 'com.github.bumptech.glide:glide:4.8.0'
+    //retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }

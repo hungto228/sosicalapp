@@ -5,17 +5,27 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 public class SplashScreen extends AppCompatActivity {
-    private static final int SPLASH_TIME = 3000;
+    private static final int SPLASH_TIME = 1000;
+    TextView mAppname,mNameCreator;
+    Animation animation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_splash_screen);
+
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
         //        Transparent Status Bar
@@ -26,10 +36,36 @@ public class SplashScreen extends AppCompatActivity {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
 
+
+
+
         setContentView(R.layout.activity_launch_screen);
+        //animation for appname ,name creator
+//animation
+        animation= AnimationUtils.loadAnimation(this,R.anim.left_in);
+        animation.setDuration(500);
+        mNameCreator=findViewById(R.id.tv_nameCreator);
+        mAppname=findViewById(R.id.tv_nameApp);
+        mNameCreator.startAnimation(animation);
+       mAppname.startAnimation(animation);
+//        imgGirl=findViewById(R.id.img_girl);
+//        try {
+//            Glide.with(getApplicationContext()).load(R.drawable.img2).into(imgGirl);
+//
+//        }catch (Exception e){
+//
+//        }
+//        Glide.with(this)
+//                .load(R.drawable.img1)
+//                .into(imgGirl);
+//        AnimationDrawable splashAnimation = (AnimationDrawable)
+//                ivBgSplash.getBackground();
+//        splashAnimation.start();
+
 
         new BackgroundTask().execute();
     }
+
     private class BackgroundTask extends AsyncTask {
         Intent intent;
 

@@ -19,7 +19,6 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,6 +31,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import java.util.HashMap;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -39,9 +39,9 @@ public class LoginActivity extends AppCompatActivity {
     public static final String TAG = "Login activity";
     private static final int RC_SIGN_IN = 100;
     GoogleSignInClient mgoogleSignInClient;
-    SignInButton mGooglelogin;
+    SignInButton mGoogleloginBtn;
     MaterialEditText mEmail, mPassword;
-    Button btn_login, mfacebook;
+    Button mLoginBtn, mfacebookBtn;
     ProgressDialog pd;
     FirebaseAuth auth;
     TextView mforgot_password;
@@ -52,6 +52,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -68,11 +69,18 @@ public class LoginActivity extends AppCompatActivity {
 
         mEmail = findViewById(R.id.email);
         mPassword = findViewById(R.id.password);
-        btn_login = findViewById(R.id.btn_login);
+        mLoginBtn = findViewById(R.id.btn_login);
         mforgot_password = findViewById(R.id.forgot_password);
-        mGooglelogin = findViewById(R.id.btn_googlelogin);
+        mGoogleloginBtn = findViewById(R.id.btn_googlelogin);
 //        mfacebook=findViewById(R.id.btn_facebook);
+        //setclick toobar
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this,StartActivity.class) );
 
+            }
+        });
         mforgot_password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,10 +89,10 @@ public class LoginActivity extends AppCompatActivity {
         });
         pd = new ProgressDialog(this);
         pd.setMessage("loggin...");
-        btn_login.setOnClickListener(new View.OnClickListener() {
+        mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                pd.show();
+             //   pd.show();
                 String txt_email = mEmail.getText().toString();
                 String txt_password = mPassword.getText().toString();
 
@@ -118,7 +126,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         //google login btn click
-        mGooglelogin.setOnClickListener(new View.OnClickListener() {
+        mGoogleloginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent signInIntent = mgoogleSignInClient.getSignInIntent();
@@ -201,5 +209,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
 }
 
