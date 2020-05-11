@@ -102,7 +102,7 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
         //create api service
         apiService = Client.getRetrofit("https://fcm.googleapis.com/").create(APIService.class);
-
+        //get intent from adapter usser
         Intent intent = getIntent();
         hisUid = intent.getStringExtra("hisUid");
         //firebase auth instance

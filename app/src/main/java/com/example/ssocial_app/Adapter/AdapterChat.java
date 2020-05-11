@@ -141,7 +141,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.Myholder> {
         } else {
             holder.mIsSeen.setVisibility(View.GONE);
         }
-        FromRightToLeft(holder.itemView,position);
+   //     FromRightToLeft(holder.itemView,position);
 
     }
     //animaton fade

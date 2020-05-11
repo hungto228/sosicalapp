@@ -2,7 +2,9 @@ package com.example.ssocial_app.Adapter;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +20,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.ssocial_app.ChatActivity;
 import com.example.ssocial_app.Model.ModelUsers;
 import com.example.ssocial_app.R;
+import com.example.ssocial_app.ThereProfileActivity;
 
 import java.util.List;
 
@@ -73,14 +76,40 @@ public class AdapterUsers extends RecyclerView.Adapter<AdapterUsers.MyHoler> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(context, ChatActivity.class);
-                intent.putExtra("hisUid",hisUid);
-                context.startActivity(intent);
+//                //remote
+//                Intent intent=new Intent(context, ChatActivity.class);
+//                intent.putExtra("hisUid",hisUid);
+//                context.startActivity(intent);
 
-                Toast.makeText(context, ""+userEmail, Toast.LENGTH_SHORT).show();
+            //    Toast.makeText(context, ""+userEmail, Toast.LENGTH_SHORT).show();
+                //show dialog
+                AlertDialog.Builder builder=new AlertDialog.Builder(context);
+                builder.setItems(new String[]{"Xem trang cá nhân", "Nhắn tin"}, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    if(which==0){
+                        //profile clicked
+                        //click go to ThereProfileActivity with uid,uid of user
+                        //show specific user  data/post
+                        Intent intent=new Intent(context, ThereProfileActivity.class);
+                        intent.putExtra("uid",hisUid);
+                        context.startActivity(intent);
+                    }
+                    if(which==1){
+                        //chat clicked
+                        //click go to ChatActivity with uid,uid of user
+                        //show specific user  data/post
+                        Intent intent=new Intent(context, ChatActivity.class);
+                        intent.putExtra("hisUid",hisUid);
+                        context.startActivity(intent);
+                    }
+                    }
+                });
+                builder.create().show();
             }
         });
-setAnimation(holder.itemView,position);
+        // animation is update because is bug
+//setAnimation(holder.itemView,position);
     }
     //animation fade
         private void setAnimation(View itemView, int i) {

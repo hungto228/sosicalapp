@@ -1,6 +1,7 @@
 package com.example.ssocial_app.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.ssocial_app.Model.ModelPost;
 import com.example.ssocial_app.R;
+import com.example.ssocial_app.ThereProfileActivity;
 
 import java.util.Calendar;
 import java.util.List;
@@ -47,7 +50,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
     public void onBindViewHolder(@NonNull Myholder holder, int position) {
             //get data
 
-        String uid=postList.get(position).getUid();
+        final String uid=postList.get(position).getUid();
         String uemail=postList.get(position).getUemail();
         String uname=postList.get(position).getUname();
         String udp=postList.get(position).getUdp();
@@ -114,6 +117,17 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
                 Toast.makeText(context, "share", Toast.LENGTH_SHORT).show();
             }
         });
+        holder.proflieLayut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Toast.makeText(context, "Profle", Toast.LENGTH_SHORT).show();
+                //click go to ThereProfileActivity with uid,uid of user
+                //show specific user  data/post
+                Intent intent=new Intent(context, ThereProfileActivity.class);
+                intent.putExtra("uid",uid);
+                context.startActivity(intent);
+            }
+        });
 
 
     }
@@ -130,6 +144,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
         TextView mUNameTv, mPtimeTv, mPtitleTv, mPdescriptionTv, mPlikesTV;
         ImageButton imgMoreBtn;
         Button mLikeBtn, mCommentBtn, mShareBtn;
+        LinearLayout proflieLayut;
 
         public Myholder(@NonNull View itemView) {
             super(itemView);
@@ -148,6 +163,8 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
             mLikeBtn = itemView.findViewById(R.id.btn_PLike);
             mCommentBtn = itemView.findViewById(R.id.btn_Pcomment);
             mShareBtn = itemView.findViewById(R.id.btn_Pshare);
+
+            proflieLayut = itemView.findViewById(R.id.profileLayout);
 
         }
     }

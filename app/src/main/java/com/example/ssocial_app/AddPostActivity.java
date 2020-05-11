@@ -100,7 +100,7 @@ public class AddPostActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     name = "" + ds.child("name").getValue();
-                    name = "" + ds.child("email").getValue();
+                    email = "" + ds.child("email").getValue();
                     dp = "" + ds.child("image").getValue();
 
                 }
