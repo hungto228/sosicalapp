@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.ssocial_app.AddPostActivity;
 import com.example.ssocial_app.Model.ModelPost;
 import com.example.ssocial_app.R;
 import com.example.ssocial_app.ThereProfileActivity;
@@ -40,6 +41,7 @@ import java.util.List;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
@@ -157,20 +159,31 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
     private void showMoreOption(ImageButton imgMoreBtn, String uid, String myUid, final String pid, final String pimage) {
         //create popup menu having option delete // use add more option later
         PopupMenu popupMenu = new PopupMenu(context, imgMoreBtn, Gravity.END);
+       // Context wrapper = new ContextThemeWrapper(context, R.style.popUP);
 
+     //   PopupMenu popup = new PopupMenu(wrapper, view);
         //show delete option in only post with user
         if (uid.equals(myUid)) {
             //add item menu
             popupMenu.getMenu().add(Menu.NONE, 0, 0, "Xóa");
+            popupMenu.getMenu().add(Menu.NONE,1,0,"Chỉnh sửa");
         }
         //item click
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 int id = item.getItemId();
-                if (id == 0)
+                if (id == 0){
                     //delete click
-                    beginDelete(pid, pimage);
+                    beginDelete(pid, pimage);}
+                else {
+                    //edit clicked
+                    //start AddPostActivity with key"editPost" and id  of the post clicked
+                    Intent intent=new Intent(context, AddPostActivity.class);
+                    intent.putExtra("key","editPost");
+                    intent.putExtra("editPostId",pid);
+                    context.startActivity(intent);
+                }
                 return false;
             }
         });

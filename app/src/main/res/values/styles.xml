@@ -6,11 +6,16 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:itemBackground">@color/Blue</item>
     </style>
     <style parent="Theme.AppCompat.Light" name="MenuStyle">
         <item name="android:background">@android:color/white</item>
     </style>
     <style name="light_noActionBar" parent="Theme.AppCompat.Light.NoActionBar">
 
+    </style>
+    <style name="popUP" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:itemBackground">@android:color/holo_red_light</item>
     </style>
 </resources>

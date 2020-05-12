@@ -635,6 +635,7 @@ public class ProfileFragment extends Fragment {
         menu.findItem(R.id.menu_Mexit).setVisible(false);
         menu.findItem(R.id.menu_Mlogout).setVisible(false);
         menu.findItem(R.id.menu_Mpost).setVisible(false);
+        menu.findItem(R.id.menu_Spost).setVisible(false);
 
         //search view
         MenuItem menuItem = menu.findItem(R.id.menu_Ssearch);
