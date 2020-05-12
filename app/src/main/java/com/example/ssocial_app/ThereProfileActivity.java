@@ -112,6 +112,8 @@ public class ThereProfileActivity extends AppCompatActivity {
         loadHisPosts();
 
     }
+    //TODO: loadHis post
+
     // copy in profilefragment is faster
     private void loadHisPosts() {
 //linearlayout for recycleview
@@ -147,6 +149,7 @@ public class ThereProfileActivity extends AppCompatActivity {
         });
 
     }
+    //TODO: search his post
     private void seachHispost(final String searchQuery){
         //linearlayout for recycleview
         LinearLayoutManager layoutManager=new LinearLayoutManager(this);

@@ -79,7 +79,7 @@ public class HomeFragment extends Fragment {
         loadPost();
         return view;
     }
-    // load post
+    //TODO: load post
     private void loadPost() {
         //path all post
         reference = FirebaseDatabase.getInstance().getReference("Posts");
@@ -107,7 +107,8 @@ public class HomeFragment extends Fragment {
         });
 
     }
-    // search post
+    //TODO: search post
+
     private  void searchPost(final String searchQuery){
         //path all post
         reference = FirebaseDatabase.getInstance().getReference("Posts");

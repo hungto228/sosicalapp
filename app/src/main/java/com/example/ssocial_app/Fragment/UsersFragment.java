@@ -125,7 +125,7 @@ public class UsersFragment extends Fragment {
 
 
 }
-
+//TODO: search user
     private void searchUser(final String query) {
         //get current usser
         Log.d(TAG, "check in ");

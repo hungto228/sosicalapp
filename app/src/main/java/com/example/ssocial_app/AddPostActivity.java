@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.os.Handler;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -16,9 +17,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -28,6 +32,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -82,6 +87,8 @@ public class AddPostActivity extends AppCompatActivity {
     String mTitle, mDescription, imgEditPost;
 
     ProgressDialog pd;
+//    private int progressStatus = 0;
+////    private Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,17 +196,17 @@ public class AddPostActivity extends AppCompatActivity {
 
     private void beginUpdate(String title, String description, String editPostId) {
         pd.setMessage("Đang cập nhật bài đăng..");
-        pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         pd.show();
 
         if (!imgEditPost.equals("noImage")) {
             //without image
+            //TODO:updateWasWith
             updateWasWithImage(title, description, editPostId);
-        } else if(imgPost.getDrawable()!=null){
+        } else if (imgPost.getDrawable() != null) {
             //with image
             updateWithNowImage(title, description, editPostId);
-        }else {
-            updateWithoutImage(title,description,editPostId);
+        } else {
+            updateWithoutImage(title, description, editPostId);
         }
     }
 
@@ -226,7 +233,7 @@ public class AddPostActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         pd.dismiss();
-                        Toast.makeText(AddPostActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddPostActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
 
                     }
                 });
@@ -275,7 +282,7 @@ public class AddPostActivity extends AppCompatActivity {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     pd.dismiss();
-                                    Toast.makeText(AddPostActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(AddPostActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
 
                                 }
                             });
@@ -288,7 +295,7 @@ public class AddPostActivity extends AppCompatActivity {
             public void onFailure(@NonNull Exception e) {
                 //image not up load
                 pd.dismiss();
-                Toast.makeText(AddPostActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddPostActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -344,7 +351,7 @@ public class AddPostActivity extends AppCompatActivity {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
                                             pd.dismiss();
-                                            Toast.makeText(AddPostActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(AddPostActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
 
                                         }
                                     });
@@ -357,7 +364,7 @@ public class AddPostActivity extends AppCompatActivity {
                     public void onFailure(@NonNull Exception e) {
                         //image not up load
                         pd.dismiss();
-                        Toast.makeText(AddPostActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddPostActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -408,118 +415,166 @@ public class AddPostActivity extends AppCompatActivity {
     //TODO: up load to firebase POSTs
     private void uploadData(final String title, final String description) {
         pd.setMessage("Đang đăng bài ...");
+// Set progress dialog style horizontal
+//        pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+//
+//        // Set the custom drawable for progress bar
+//        pd.setProgressDrawable(getDrawable(R.drawable.progressbar_states));
+//        // Set the progress status zero on each button click
+//        progressStatus = 0;
+//
+//        // Start the lengthy operation in a background thread
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while (progressStatus < 100) {
+//                    // Update the progress status
+//                    progressStatus += 1;
+//
+//                    // Try to sleep the thread for 20 milliseconds
+//                    try {
+//                        Thread.sleep(20);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    // Update the progress bar
+//                    handler.post(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            // Update the progress status
+//                            pd.setProgress(progressStatus);
+//                            // If task execution completed
+//                            if (progressStatus == 100) {
+//                                // Dismiss/hide the progress dialog
+//                                pd.dismiss();
+//                            }
+//                        }
+//                    });
+//                }
+//            }
+//        }).start(); // Start the operation
+
+
+    // Change the background color of progress dialog
+    // pd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.YELLOW));
         pd.show();
 
 
-        //post -image name,post-id,post-publish-time
-        final String timestamp = String.valueOf(System.currentTimeMillis());
-        String filePathAndName = "Post/" + "post_" + timestamp;
-        if (imgPost.getDrawable() != null) {
-            //get image from imageview
-            Bitmap bitmap = ((BitmapDrawable) imgPost.getDrawable()).getBitmap();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            //image compress
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-            byte[] data = baos.toByteArray();
+    //post -image name,post-id,post-publish-time
+    final String timestamp = String.valueOf(System.currentTimeMillis());
+    String filePathAndName = "Post/" + "post_" + timestamp;
+        if(imgPost.getDrawable()!=null)
 
-            //post with image
-            StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(filePathAndName);
-            storageReference.putBytes(data)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            //image is upload to firebase Storage
-                            Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
-                            while (!uriTask.isSuccessful()) ;
-                            String dowloadUri = uriTask.getResult().toString();
-                            if (uriTask.isSuccessful()) {
-                                //uri is received up load post to firebase
-                                HashMap<Object, String> hashMap = new HashMap<>();
-                                //put post info
-                                hashMap.put("uid", uid);
-                                hashMap.put("uname", name);
-                                hashMap.put("uemail", email);
-                                hashMap.put("udp", dp);
-                                hashMap.put("pid", timestamp);
-                                hashMap.put("ptitle", title);
-                                hashMap.put("pdescr", description);
-                                hashMap.put("pimage", dowloadUri);
-                                hashMap.put("ptime", timestamp);
-                                //path to store Post data
-                                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
-                                //put data in reference
-                                reference.child(timestamp).setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        //added in database
-                                        Toast.makeText(AddPostActivity.this, "Đã đăng bài", Toast.LENGTH_SHORT).show();
-                                        //reset view
-                                        mTitleEdt.setText("");
-                                        mDescriptionEdt.setText("");
-                                        imgPost.setImageURI(null);
-                                        image_uri = null;
-                                        pd.dismiss();
+    {
+        //get image from imageview
+        Bitmap bitmap = ((BitmapDrawable) imgPost.getDrawable()).getBitmap();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        //image compress
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] data = baos.toByteArray();
 
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        //failed adding post
-                                        pd.dismiss();
-                                        Toast.makeText(AddPostActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+        //post with image
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(filePathAndName);
+        storageReference.putBytes(data)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        //image is upload to firebase Storage
+                        Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                        while (!uriTask.isSuccessful()) ;
+                        String dowloadUri = uriTask.getResult().toString();
+                        if (uriTask.isSuccessful()) {
+                            //uri is received up load post to firebase
+                            HashMap<Object, String> hashMap = new HashMap<>();
+                            //put post info
+                            hashMap.put("uid", uid);
+                            hashMap.put("uname", name);
+                            hashMap.put("uemail", email);
+                            hashMap.put("udp", dp);
+                            hashMap.put("pid", timestamp);
+                            hashMap.put("ptitle", title);
+                            hashMap.put("pdescr", description);
+                            hashMap.put("pimage", dowloadUri);
+                            hashMap.put("ptime", timestamp);
+                            //path to store Post data
+                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
+                            //put data in reference
+                            reference.child(timestamp).setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    //added in database
+                                    Toast.makeText(AddPostActivity.this, "Đã đăng bài", Toast.LENGTH_SHORT).show();
+                                    //reset view
+                                    mTitleEdt.setText("");
+                                    mDescriptionEdt.setText("");
+                                    imgPost.setImageURI(null);
+                                    image_uri = null;
+                                    pd.dismiss();
 
-                            }
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    //failed adding post
+                                    pd.dismiss();
+                                    Toast.makeText(AddPostActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
                         }
-                    }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    //failed uploading image
-                    pd.dismiss();
-                    Toast.makeText(AddPostActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                //failed uploading image
+                pd.dismiss();
+                Toast.makeText(AddPostActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        } else {
-            //post without image
-            //uri is received up load post to firebase
-            HashMap<Object, String> hashMap = new HashMap<>();
-            //put post info
-            hashMap.put("uid", uid);
-            hashMap.put("uname", name);
-            hashMap.put("uemail", email);
-            hashMap.put("udp", dp);
-            hashMap.put("pid", timestamp);
-            hashMap.put("ptitle", title);
-            hashMap.put("pdescr", description);
-            hashMap.put("pimage", "noImage");
-            hashMap.put("ptime", timestamp);
-            //path to store Post data
-            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
-            //put data in reference
-            reference.child(timestamp).setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    //added in database
-                    Toast.makeText(AddPostActivity.this, "Đã đăng bài", Toast.LENGTH_SHORT).show();
-                    //reset view
-                    mTitleEdt.setText("");
-                    mDescriptionEdt.setText("");
-                    imgPost.setImageURI(null);
-                    image_uri = null;
-                    pd.dismiss();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    //failed adding post
-                    pd.dismiss();
-                    Toast.makeText(AddPostActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
+    } else
+
+    {
+        //post without image
+        //uri is received up load post to firebase
+        HashMap<Object, String> hashMap = new HashMap<>();
+        //put post info
+        hashMap.put("uid", uid);
+        hashMap.put("uname", name);
+        hashMap.put("uemail", email);
+        hashMap.put("udp", dp);
+        hashMap.put("pid", timestamp);
+        hashMap.put("ptitle", title);
+        hashMap.put("pdescr", description);
+        hashMap.put("pimage", "noImage");
+        hashMap.put("ptime", timestamp);
+        //path to store Post data
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
+        //put data in reference
+        reference.child(timestamp).setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                //added in database
+                Toast.makeText(AddPostActivity.this, "Đã đăng bài", Toast.LENGTH_SHORT).show();
+                //reset view
+                mTitleEdt.setText("");
+                mDescriptionEdt.setText("");
+                imgPost.setImageURI(null);
+                image_uri = null;
+                pd.dismiss();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                //failed adding post
+                pd.dismiss();
+                Toast.makeText(AddPostActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
+}
 
     private void showImagePickDialog() {
 //lựa chon thu viện

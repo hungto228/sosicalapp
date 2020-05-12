@@ -334,7 +334,7 @@ public class ChatActivity extends AppCompatActivity {
         reference.updateChildren(hashMap);
 
     }
-
+//TODO: check typing
     private void checkTypingStatus(String typing) {
         reference = FirebaseDatabase.getInstance().getReference("Users").child(myUid);
         HashMap<String, Object> hashMap = new HashMap<>();

@@ -30,6 +30,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -49,11 +50,19 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
     Context context;
     List<ModelPost> postList;
     String myUid;
+    //for  like database  node
+    private DatabaseReference likeReference;
+    //reference of post
+    private DatabaseReference postReference;
+
+    boolean mProgressLike=false;
 
     public AdapterPosts(Context context, List<ModelPost> postList) {
         this.context = context;
         this.postList = postList;
         myUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        likeReference=FirebaseDatabase.getInstance().getReference("Likes");
+        postReference=FirebaseDatabase.getInstance().getReference("Posts");
     }
 
     @NonNull
@@ -67,7 +76,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
 
     //TODO: onBindView AdapterPost
     @Override
-    public void onBindViewHolder(@NonNull final Myholder holder, int position) {
+    public void onBindViewHolder(@NonNull final Myholder holder, final int position) {
         //get data
 
         final String uid = postList.get(position).getUid();
@@ -80,6 +89,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
         String pdescription = postList.get(position).getPdescr();
         final String pimage = postList.get(position).getPimage();
         String ptimestamp = postList.get(position).getPtime();
+        final String plikes=postList.get(position).getPlikes();
 
         // convert timestamp to dd/mm/yy
         Calendar calendar = Calendar.getInstance(Locale.CANADA);
@@ -92,6 +102,10 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
         holder.mPtimeTv.setText(datetime);
         holder.mPtitleTv.setText(ptitle);
         holder.mPdescriptionTv.setText(pdescription);
+        holder.mPlikesTV.setText(plikes+"Thích");
+
+        //set like for  post
+        setLike(holder,pid);
         Log.d(TAG, "set data: ");
 
         //set user dp
@@ -125,7 +139,38 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
         holder.mLikeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Likes", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, "Likes", Toast.LENGTH_SHORT).show();
+                //get total number of likes for the post ,whose like  button clicked
+                //increase values by1,otherwire decreale values by 1
+                final int pLikes =Integer.parseInt(postList.get(position).getPlikes());
+                mProgressLike=true;
+                //get id of the post clicked
+                final String  postIde=postList.get(position).getPid();
+                likeReference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(mProgressLike){
+                            if (dataSnapshot.child(postIde).hasChild(myUid)){
+                                // is liked  , so remove likeL
+                                postReference.child(postIde).child("plikes").setValue(""+(pLikes-1));
+                                 likeReference.child(postIde).child(myUid).removeValue();
+                                 //bug remove values
+                                 mProgressLike=false;
+                            }else{
+                                //not like ,like it;
+                                postReference.child(postIde).child("plikes").setValue(""+(pLikes+1));
+                                likeReference.child(postIde).child(myUid).setValue("Liked");
+                                mProgressLike=false;
+
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
         holder.mCommentBtn.setOnClickListener(new View.OnClickListener() {
@@ -153,6 +198,32 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
         });
 
 
+    }
+    //TODO:set like for
+    private void setLike(final Myholder holder, final String posKey) {
+        likeReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.child(posKey).hasChild(myUid)){
+                   // user ha not liked this post
+                    //change icon button from like => liked
+                    //change text like button  from like to liked
+                    holder.mLikeBtn.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_like_green,0,0,0);
+                    holder.mLikeBtn.setText("Đã Thích");
+                }else {
+                    //user ha not liked this post
+                    //change icon button from like => liked
+                    //change text like button  from like to liked
+                    holder.mLikeBtn.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_like_back,0,0,0);
+                    holder.mLikeBtn.setText("Thích");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     //
@@ -195,10 +266,12 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
         // post can be with  or without image
         if (pimage.equals("noImage")) {
             //post without image
+            //TODO:deleteWithoutImage
             deleteWithoutImage(pid, pimage);
 
         } else {
             //post with image
+            //TODO:deleteWithImage
             deleteWithImage(pid, pimage);
 
         }

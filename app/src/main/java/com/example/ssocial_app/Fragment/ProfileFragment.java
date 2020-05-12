@@ -185,10 +185,11 @@ public class ProfileFragment extends Fragment {
         });
         postList = new ArrayList<>();
         checkUserStatus();
+
         loadMyPosts();
         return view;
     }
-
+    //TODO: load myPOST
     private void loadMyPosts() {
         //linearlayout for recycleview
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -224,7 +225,7 @@ public class ProfileFragment extends Fragment {
 
 
     }
-
+    //TODO: searchMyPost
     private void searchMyPosts(final String searchQuery) {
         //linearlayout for recycleview
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -267,7 +268,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void showProfileDialog() {
-        //TODO: dialog option
+        //TODO: show dialog option, image cover, image avata,,name ,phone
         //edit profile picture,cover photo,name,phone
 //       final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_singlechoice);
 //       arrayAdapter.add("Sửa ảnh đại diện");
@@ -343,7 +344,7 @@ public class ProfileFragment extends Fragment {
         builder.show();
 
     }
-
+//TODO: pick camere and gallery with all
     private void pickFromCamera() {
         //intent pick camera form  camera
         ContentValues cv = new ContentValues();
