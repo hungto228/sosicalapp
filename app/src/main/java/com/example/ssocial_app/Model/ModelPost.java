@@ -2,17 +2,18 @@ package com.example.ssocial_app.Model;
 
 public class ModelPost {
     //when use  pid,ptitle,pimage,ptime,uid,uemail,udp,uname;
-    String pid,ptitle,pdescr,plikes,pimage,ptime,uid,uemail,udp,uname;
-    public ModelPost()
-    {
+    String pid, ptitle, pdescr, plikes, pcomment, pimage, ptime, uid, uemail, udp, uname;
+
+    public ModelPost() {
 
     }
 
-    public ModelPost(String pid, String ptitle, String pdescr, String plikes, String pimage, String ptime, String uid, String uemail, String udp, String uname) {
+    public ModelPost(String pid, String ptitle, String pdescr, String plikes, String pcomment, String pimage, String ptime, String uid, String uemail, String udp, String uname) {
         this.pid = pid;
         this.ptitle = ptitle;
         this.pdescr = pdescr;
         this.plikes = plikes;
+        this.pcomment = pcomment;
         this.pimage = pimage;
         this.ptime = ptime;
         this.uid = uid;
@@ -51,6 +52,14 @@ public class ModelPost {
 
     public void setPlikes(String plikes) {
         this.plikes = plikes;
+    }
+
+    public String getPcomment() {
+        return pcomment;
+    }
+
+    public void setPcomment(String pcomment) {
+        this.pcomment = pcomment;
     }
 
     public String getPimage() {

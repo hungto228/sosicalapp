@@ -512,6 +512,37 @@ public class ProfileFragment extends Fragment {
 
                             }
                         });
+                        //update user image in current  usser comment on post
+                        //TODO:update name in curent  user  comment on post
+                        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot ds:dataSnapshot.getChildren()){
+                                    String child1=ds.getKey();
+                                    Query child2=FirebaseDatabase.getInstance().getReference("Posts").child(child1).child("Comment")
+                                            .orderByChild("uid").equalTo(uid);
+                                    child2.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            for(DataSnapshot ds:dataSnapshot.getChildren()){
+                                                String child=ds.getKey();
+                                                dataSnapshot.getRef().child(child).child("udp").setValue(dowload.toString());
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
                     }
 
                 } else {
@@ -583,6 +614,36 @@ public class ProfileFragment extends Fragment {
                                     String child = ds.getKey();
                                     dataSnapshot.getRef().child(child).child("uname").setValue(values);
 
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                        //TODO:update name in curent  user  comment on post
+                        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot ds:dataSnapshot.getChildren()){
+                                    String child1=ds.getKey();
+                                    Query child2=FirebaseDatabase.getInstance().getReference("Posts").child(child1).child("Comment")
+                                            .orderByChild("uid").equalTo(uid);
+                                    child2.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            for(DataSnapshot ds:dataSnapshot.getChildren()){
+                                                String child=ds.getKey();
+                                                dataSnapshot.getRef().child(child).child("uname").setValue(values);
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
                                 }
                             }
 

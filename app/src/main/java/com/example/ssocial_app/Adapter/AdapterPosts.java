@@ -23,6 +23,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.ssocial_app.AddPostActivity;
 import com.example.ssocial_app.Model.ModelPost;
+import com.example.ssocial_app.PostDetailActivity;
 import com.example.ssocial_app.R;
 import com.example.ssocial_app.ThereProfileActivity;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -90,6 +91,8 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
         final String pimage = postList.get(position).getPimage();
         String ptimestamp = postList.get(position).getPtime();
         final String plikes=postList.get(position).getPlikes();
+        String pcomment=postList.get(position).getPcomment();
+
 
         // convert timestamp to dd/mm/yy
         Calendar calendar = Calendar.getInstance(Locale.CANADA);
@@ -103,6 +106,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
         holder.mPtitleTv.setText(ptitle);
         holder.mPdescriptionTv.setText(pdescription);
         holder.mPlikesTV.setText(plikes+"Thích");
+        holder.mPcommentTV.setText(pcomment+"Bình luận");
 
         //set like for  post
         setLike(holder,pid);
@@ -128,7 +132,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
             }
         }
 
-        //handle button  more click
+        //TODO:handle button  more click
         holder.imgMoreBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -173,10 +177,16 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
                 });
             }
         });
+        //TODO:hander button Comment click
         holder.mCommentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "comment", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, "comment", Toast.LENGTH_SHORT).show();
+                //start PostDetailActivity
+                Intent intent=new Intent(context, PostDetailActivity.class);
+                //get delail  of post using id,id of post cliked
+                intent.putExtra("posiID",pid);
+                context.startActivity(intent);
             }
         });
         holder.mShareBtn.setOnClickListener(new View.OnClickListener() {
@@ -239,6 +249,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
             popupMenu.getMenu().add(Menu.NONE, 0, 0, "Xóa");
             popupMenu.getMenu().add(Menu.NONE,1,0,"Chỉnh sửa");
         }
+        popupMenu.getMenu().add(Menu.NONE,2,0,"Xem chi tiết");
         //item click
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -247,12 +258,18 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
                 if (id == 0){
                     //delete click
                     beginDelete(pid, pimage);}
-                else {
+                else if(id==1) {
                     //edit clicked
                     //start AddPostActivity with key"editPost" and id  of the post clicked
                     Intent intent=new Intent(context, AddPostActivity.class);
                     intent.putExtra("key","editPost");
                     intent.putExtra("editPostId",pid);
+                    context.startActivity(intent);
+                }else if (id==2){
+                    //start PostDetailActivity
+                    Intent intent=new Intent(context, PostDetailActivity.class);
+                    //get delail  of post using id,id of post cliked
+                    intent.putExtra("posiID",pid);
                     context.startActivity(intent);
                 }
                 return false;
@@ -358,7 +375,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
     class Myholder extends RecyclerView.ViewHolder {
         //view from row_post
         ImageView imgUpicture, imgPpicture;
-        TextView mUNameTv, mPtimeTv, mPtitleTv, mPdescriptionTv, mPlikesTV;
+        TextView mUNameTv, mPtimeTv, mPtitleTv, mPdescriptionTv, mPlikesTV,mPcommentTV;
         ImageButton imgMoreBtn;
         Button mLikeBtn, mCommentBtn, mShareBtn;
         LinearLayout proflieLayut;
@@ -376,6 +393,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
             mPtitleTv = itemView.findViewById(R.id.tv_Ptitle);
             mPdescriptionTv = itemView.findViewById(R.id.tv_Pdescripsion);
             mPlikesTV = itemView.findViewById(R.id.tv_Plike);
+            mPcommentTV=itemView.findViewById(R.id.tv_Pcomment);
 
             mLikeBtn = itemView.findViewById(R.id.btn_PLike);
             mCommentBtn = itemView.findViewById(R.id.btn_Pcomment);

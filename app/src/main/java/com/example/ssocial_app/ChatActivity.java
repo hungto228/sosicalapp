@@ -10,6 +10,7 @@ import retrofit2.Callback;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -78,7 +79,9 @@ public class ChatActivity extends AppCompatActivity {
 
     APIService apiService;
     boolean notify = false;
-
+    Handler handler;
+    Runnable runnable;
+    int count = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,13 +126,50 @@ public class ChatActivity extends AppCompatActivity {
                     String typingStatus = "" + ds.child("typing").getValue();
                     //check typing status
                     if (typingStatus.equals(myUid)) {
-                        mStatusUser.setText("Đang nhập ...");
+                        //TODO: status when user typing
+                     //   mStatusUser.setText("Đang nhập ...");
+                         handler = new Handler();
+                        runnable = new Runnable() {
+
+                            @Override
+                            public void run() {
+                                count++;
+                                if (count == 1)
+                                {
+                                    mStatusUser.setText("Đang nhập .");
+                                }
+                                else if (count == 2)
+                                {
+                                    mStatusUser.setText("Đang nhập ..");
+                                }
+                                else if (count == 3)
+                                {
+                                    mStatusUser.setText("Đang nhập ...");
+                                }
+                                else if (count == 4)
+                                {
+                                    mStatusUser.setText("Đang nhập ....");
+                                }
+
+                                if (count == 4)
+                                    stoptyping();
+
+                                handler.postDelayed(this, 2 * 100);
+                            }
+                        };
+                        handler.postDelayed(runnable, 1 * 100);
+
                     } else {
+                        stoptyping();
                         //get values of online status
                         String onlineStatus = "" + ds.child("onlinestatus").getValue();
                         if (onlineStatus.equals("online")) {
                             mStatusUser.setText(onlineStatus);
+
+
                         } else {
+                            stoptyping();
+                            //TODO: status when user offline
                             //convert  timestamp to proper time date
                             // convert timestamp to dd/mm/yy
                             Calendar calendar = Calendar.getInstance(Locale.CANADA);
@@ -225,6 +265,12 @@ public class ChatActivity extends AppCompatActivity {
 
             }
         });
+    }
+    private void stoptyping(){
+
+        count = 0;
+
+
     }
 
     //ToDO:readMessage
@@ -402,4 +448,11 @@ public class ChatActivity extends AppCompatActivity {
         checkOnlineStatus("online");
         super.onResume();
     }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        handler.removeCallbacks(runnable);
+    }
+
 }
