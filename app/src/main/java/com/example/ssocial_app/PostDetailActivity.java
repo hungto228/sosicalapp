@@ -3,6 +3,8 @@ package com.example.ssocial_app;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -26,6 +28,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.ssocial_app.Adapter.AdapterComments;
+import com.example.ssocial_app.Model.ModelComment;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,8 +43,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 public class PostDetailActivity extends AppCompatActivity {
@@ -57,6 +63,10 @@ public class PostDetailActivity extends AppCompatActivity {
     ImageButton imgMoreBtn;
     Button mLikeBtn, mShareBtn;
     LinearLayout profileLayout;
+    RecyclerView recyclerView;
+
+    List<ModelComment> commentList;
+    AdapterComments adapterComments;
 
     //add comment view
     ImageButton imgSendBtn;
@@ -92,6 +102,7 @@ public class PostDetailActivity extends AppCompatActivity {
         mLikeBtn = findViewById(R.id.btn_PLike);
         mShareBtn = findViewById(R.id.btn_Pshare);
         profileLayout = findViewById(R.id.profileLayout);
+        recyclerView=findViewById(R.id.recycleView);
 
         //init add comment
         imgSendBtn = findViewById(R.id.imgBtn_send);
@@ -108,7 +119,8 @@ public class PostDetailActivity extends AppCompatActivity {
         setLikes();
         //subtitle of actionbar
         actionBar.setSubtitle("Đăng nhập bằng " + myEmail);
-
+        //TODO: load comment
+        loadComments();
         //TODO:sendComment button click
         imgSendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,6 +144,39 @@ public class PostDetailActivity extends AppCompatActivity {
         });
 
 
+
+    }
+
+    private void loadComments() {
+        //layout for  recycleview
+        LinearLayoutManager layoutManager=new LinearLayoutManager(getApplicationContext());
+        //set layout to recycleView
+        recyclerView.setLayoutManager(layoutManager);
+
+        // commment list
+        commentList=new ArrayList<>();
+        // path posts , get comment
+       DatabaseReference reference=FirebaseDatabase.getInstance().getReference("Posts").child(postId).child("Comments");
+       reference.addValueEventListener(new ValueEventListener() {
+           @Override
+           public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+               commentList.clear();
+                for (DataSnapshot ds:dataSnapshot.getChildren()){
+                  ModelComment modelComment=ds.getValue(ModelComment.class);
+
+                   commentList.add(modelComment);
+
+                    //setup data
+                    adapterComments=new AdapterComments(getApplicationContext(),commentList);
+                    recyclerView.setAdapter(adapterComments);
+                }
+           }
+
+           @Override
+           public void onCancelled(@NonNull DatabaseError databaseError) {
+
+           }
+       });
 
     }
 
@@ -337,7 +382,7 @@ public class PostDetailActivity extends AppCompatActivity {
         }
         String timeStamp = String.valueOf(System.currentTimeMillis());
         //get reffrence Post,child "comment" contain  in Posts
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts").child(postId).child("comment");
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts").child(postId).child("Comments");
 
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("cid", timeStamp);
@@ -345,6 +390,7 @@ public class PostDetailActivity extends AppCompatActivity {
         hashMap.put("timestamp", timeStamp);
         hashMap.put("uid", myUid);
         hashMap.put("uemail", myEmail);
+        hashMap.put("udp",myDp);
         hashMap.put("uname", myName);
         // put this data in database, child time, setvalues hashmap
         reference.child(timeStamp).setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {

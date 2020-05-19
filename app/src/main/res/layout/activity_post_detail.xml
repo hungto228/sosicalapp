@@ -6,12 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".PostDetailActivity">
 <androidx.core.widget.NestedScrollView
+    android:layout_above="@+id/commentLayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 <!--actual post-->
         <androidx.cardview.widget.CardView
@@ -153,9 +154,26 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 <!--        list comment will before-->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bình luận "
+            android:drawableStart="@drawable/ic_comment_back"
+            android:textColor="@color/Black"
+            android:layout_marginLeft="10dp"
+            android:drawableLeft="@drawable/ic_comment_back"
+            />
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/recycleView"/>
+
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
     <RelativeLayout
+        android:id="@+id/commentLayout"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

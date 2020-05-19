@@ -40,6 +40,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.Context.CONNECTIVITY_SERVICE;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,6 +65,7 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+
         //init
         auth = FirebaseAuth.getInstance();
 
@@ -77,7 +80,13 @@ public class HomeFragment extends Fragment {
         postList = new ArrayList<>();
 
         loadPost();
+        if (!checknet()) {
+
+            Toast.makeText(getActivity(), "Không kết nối internet", Toast.LENGTH_SHORT).show();
+
+        }
         return view;
+
     }
     //TODO: load post
     private void loadPost() {
@@ -211,4 +220,16 @@ public class HomeFragment extends Fragment {
 //        }
 //        return super.onContextItemSelected(item);
 //    }
+    private boolean checknet() {
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetworkinfo = connectivityManager.getActiveNetworkInfo();
+
+        return activeNetworkinfo != null && activeNetworkinfo.isConnected();
+
+//write below methodcall in every button click event wherever u want to check internet connection
+
+
+    }
 }

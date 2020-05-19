@@ -4,9 +4,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 
 import com.example.ssocial_app.Fragment.ChatListFragment;
@@ -42,18 +45,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setTheme(R.style.light_noActionBar);
-        actionBar=getSupportActionBar();
+        actionBar = getSupportActionBar();
 
-         // actionBar.setTitle("Main");
+        // actionBar.setTitle("Main");
         //enabed back button in actionbar
         actionBar.setDisplayHomeAsUpEnabled(false);
         actionBar.setDisplayShowHomeEnabled(false);
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2E9AFE")));
-      //  setActionBarTextColor(actionBar,R.color.white);
+        //  setActionBarTextColor(actionBar,R.color.white);
 
 
-        //        Transparent Status Bar
+        if (!checknet()) {
 
+            Toast.makeText(this, "Không kết nối internet", Toast.LENGTH_SHORT).show();
+
+        }
 
 
         //init
@@ -77,7 +83,8 @@ public class MainActivity extends AppCompatActivity {
         checkUserStatus();
         super.onResume();
     }
-//TODO: update token
+
+    //TODO: update token
     public void updateToken(String token) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");
         Token mToken = new Token(token);
@@ -131,15 +138,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
 
-   @Override
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
 
-
-       return super.onCreateOptionsMenu(menu);
+        return super.onCreateOptionsMenu(menu);
     }
-
 
 
     @Override
@@ -160,9 +165,9 @@ public class MainActivity extends AppCompatActivity {
                 startMain.addCategory(Intent.CATEGORY_HOME);
                 startActivity(startMain);
                 finish();
-            case  R.id.menu_Mpost:
-                    startActivity(new Intent(this, AddPostActivity.class));
-                }
+            case R.id.menu_Mpost:
+                startActivity(new Intent(this, AddPostActivity.class));
+        }
         return false;
     }
 
@@ -171,9 +176,9 @@ public class MainActivity extends AppCompatActivity {
         if (user != null) {
             mUID = user.getUid();
             //TODO:SharedPreferences save uid
-            SharedPreferences sp=getSharedPreferences("SP_USER",MODE_PRIVATE);
-            SharedPreferences.Editor editor=sp.edit();
-            editor.putString("Current_USERID",mUID);
+            SharedPreferences sp = getSharedPreferences("SP_USER", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putString("Current_USERID", mUID);
             editor.apply();
             //update token
             updateToken(FirebaseInstanceId.getInstance().getToken());
@@ -183,7 +188,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-//    private Boolean isOnline() {
+
+    //    private Boolean isOnline() {
 //        ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
 //        NetworkInfo ni = cm.getActiveNetworkInfo();
 //        if(ni != null && ni.isConnected()) {
@@ -191,4 +197,16 @@ public class MainActivity extends AppCompatActivity {
 //        }
 //        return false;
 //    }
+    private boolean checknet() {
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetworkinfo = connectivityManager.getActiveNetworkInfo();
+
+        return activeNetworkinfo != null && activeNetworkinfo.isConnected();
+
+//write below methodcall in every button click event wherever u want to check internet connection
+
+
+    }
 }
