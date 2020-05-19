@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
@@ -68,6 +70,7 @@ public class PostDetailActivity extends AppCompatActivity {
         //action bar
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Chi tiết bài đăng");
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2E9AFE")));
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
 
@@ -375,7 +378,7 @@ public class PostDetailActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (mProgressComment) {
-                    String comment=""+dataSnapshot.child("pComment").getValue();
+                    String comment=""+dataSnapshot.child("pcomment").getValue();
                     int newComentValues=Integer.parseInt(comment)+1;
                     reference.child("pcomment").setValue(""+newComentValues);
                     mProgressComment=false;
@@ -425,10 +428,10 @@ public class PostDetailActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // keep checking post until  get the required
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    String ptitle = "" + ds.child("ptiltle").getValue();
+                    String ptitle = "" + ds.child("ptitle").getValue();
                     String pdescr = "" + ds.child("pdescr").getValue();
                     pLikes = "" + ds.child("plikes").getValue();
-                    String ptimestamp = "" + ds.child("ptimestamp").getValue();
+                    String ptimestamp = "" + ds.child("ptime").getValue();
                     pimage = "" + ds.child("pimage").getValue();
                     hisDp = "" + ds.child("udp").getValue();
                     hisUid = "" + ds.child("uid").getValue();
@@ -444,9 +447,9 @@ public class PostDetailActivity extends AppCompatActivity {
                     //yyyy-MM-dd hh:mm:ss a     dd/mm/yyyy hh:mm aa
 
                     //set data
-                    mPtimeTV.setText(ptitle);
+                    mPtitleTV.setText(ptitle);
                     mPdescriptionTv.setText(pdescr);
-                    mPlikesTV.setText(pLikes);
+                    mPlikesTV.setText(pLikes+"Thích");
                     mPtimeTV.setText(datetime);
                     mPcommentTV.setText(commentCount+"Bình luận");
 

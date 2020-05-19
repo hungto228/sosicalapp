@@ -460,7 +460,8 @@ public class AddPostActivity extends AppCompatActivity {
     // pd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.YELLOW));
         pd.show();
 
-String plike="5";
+final String plike="0";
+final String pcomment="0";
     //post -image name,post-id,post-publish-time
     final String timestamp = String.valueOf(System.currentTimeMillis());
     String filePathAndName = "Post/" + "post_" + timestamp;
@@ -497,6 +498,8 @@ String plike="5";
                             hashMap.put("pdescr", description);
                             hashMap.put("pimage", dowloadUri);
                             hashMap.put("ptime", timestamp);
+                            hashMap.put("plikes",plike);
+                            hashMap.put("pcomment",pcomment);
                             //path to store Post data
                             DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
                             //put data in reference
@@ -550,6 +553,7 @@ String plike="5";
         hashMap.put("pimage", "noImage");
         hashMap.put("ptime", timestamp);
         hashMap.put("plikes",plike);
+        hashMap.put("pcomment",pcomment);
         //path to store Post data
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
         //put data in reference

@@ -185,7 +185,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
                 //start PostDetailActivity
                 Intent intent=new Intent(context, PostDetailActivity.class);
                 //get delail  of post using id,id of post cliked
-                intent.putExtra("posiID",pid);
+                intent.putExtra("postId",pid);
                 context.startActivity(intent);
             }
         });

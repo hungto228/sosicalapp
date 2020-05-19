@@ -127,48 +127,49 @@ public class ChatActivity extends AppCompatActivity {
                     //check typing status
                     if (typingStatus.equals(myUid)) {
                         //TODO: status when user typing
-                     //   mStatusUser.setText("Đang nhập ...");
-                         handler = new Handler();
-                        runnable = new Runnable() {
-
-                            @Override
-                            public void run() {
-                                count++;
-                                if (count == 1)
-                                {
-                                    mStatusUser.setText("Đang nhập .");
-                                }
-                                else if (count == 2)
-                                {
-                                    mStatusUser.setText("Đang nhập ..");
-                                }
-                                else if (count == 3)
-                                {
-                                    mStatusUser.setText("Đang nhập ...");
-                                }
-                                else if (count == 4)
-                                {
-                                    mStatusUser.setText("Đang nhập ....");
-                                }
-
-                                if (count == 4)
-                                    stoptyping();
-
-                                handler.postDelayed(this, 2 * 100);
-                            }
-                        };
-                        handler.postDelayed(runnable, 1 * 100);
+                        mStatusUser.setText("Đang nhập ...");
+//                         handler = new Handler();
+//                        runnable = new Runnable() {
+//
+//                            @Override
+//                            public void run() {
+//                                count++;
+//                                if (count == 1)
+//                                {
+//                                    mStatusUser.setText("Đang nhập .");
+//                                }
+//                                else if (count == 2)
+//                                {
+//                                    mStatusUser.setText("Đang nhập ..");
+//                                }
+//                                else if (count == 3)
+//                                {
+//                                    mStatusUser.setText("Đang nhập ...");
+//                                }
+//                                else if (count == 4)
+//                                {
+//                                    mStatusUser.setText("Đang nhập ....");
+//                                }
+//
+//                                if (count == 4)
+//                                   stoptyping();
+//
+//                                handler.postDelayed(this, 2 * 100);
+//                            }
+//                        };
+//                        handler.postDelayed(runnable, 1 * 100);
 
                     } else {
-                        stoptyping();
+
                         //get values of online status
                         String onlineStatus = "" + ds.child("onlinestatus").getValue();
                         if (onlineStatus.equals("online")) {
                             mStatusUser.setText(onlineStatus);
+                            stoptyping();
 
 
                         } else {
-                            stoptyping();
+
                             //TODO: status when user offline
                             //convert  timestamp to proper time date
                             // convert timestamp to dd/mm/yy
@@ -176,6 +177,7 @@ public class ChatActivity extends AppCompatActivity {
                             calendar.setTimeInMillis(Long.parseLong(onlineStatus));
                             String datetime = DateFormat.format("dd/MM/yyyy hh:mm a", calendar).toString();
                             mStatusUser.setText("Nhìn thấy lần cuối từ " + datetime);
+                            stoptyping();
                         }
                     }
 

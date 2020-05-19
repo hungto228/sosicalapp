@@ -19,35 +19,38 @@
             android:layout_height="wrap_content"
             android:background="@drawable/editextstyle"
             android:padding="10dp"
-            android:hint="Nhập tiêu đề."
+            android:hint="Thêm tiêu đề giúp nổi bật hơn."
             android:singleLine="true"/>
 <!--        Imageview input post image-->
         <ImageView
             android:id="@+id/img_post"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="410dp"
+            android:layout_height="200dp"
             android:minHeight="200dp"
-            android:background="@color/chat"
+            android:background="@drawable/download"
+
             />
 <!--        Editext input post description-->
         <EditText
             android:id="@+id/edt_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/editextstyle"
+
             android:padding="10dp"
             android:inputType="textCapSentences|textMultiLine"
-            android:hint="Nhập miêu tả."
-            android:minHeight="120dp"
+            android:hint="Thêm nội dung thay lời muốn nói."
+
+            android:minHeight="100dp"
             android:singleLine="true"/>
 <!--        Button publish post to firebase-->
         <Button
             android:id="@+id/btn_uploadPost"
-            style="@style/Widget.AppCompat.Button.Colored"
+          android:background="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:text="Đăng"
+            android:textSize="24dp"
             android:textAllCaps="false"/>
 
 

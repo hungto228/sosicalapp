@@ -102,7 +102,7 @@
                     android:padding="5dp"
                     android:layout_weight="1"
                     android:textColor="@color/design_default_color_error"
-                    android:drawableLeft="@drawable/ic_like_green"
+
                     android:text="10 k Likes"/>
                 <TextView
                     android:id="@+id/tv_Pcomment"
