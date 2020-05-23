@@ -1,13 +1,14 @@
 package com.example.ssocial_app.Model;
 
 public class ModelComment {
-    String cId,comment,timestamp,uid,uemail,udp,uname;
-    public  ModelComment(){
+    String cid, comment, timestamp, uid, uemail, udp, uname;
+
+    public ModelComment() {
 
     }
 
-    public ModelComment(String cId, String comment, String timestamp, String uid, String uemail, String udp, String uname) {
-        this.cId = cId;
+    public ModelComment(String cid, String comment, String timestamp, String uid, String uemail, String udp, String uname) {
+        this.cid = cid;
         this.comment = comment;
         this.timestamp = timestamp;
         this.uid = uid;
@@ -16,12 +17,12 @@ public class ModelComment {
         this.uname = uname;
     }
 
-    public String getcId() {
-        return cId;
+    public String getCid() {
+        return cid;
     }
 
-    public void setcId(String cId) {
-        this.cId = cId;
+    public void setCid(String cid) {
+        this.cid = cid;
     }
 
     public String getComment() {

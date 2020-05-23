@@ -165,7 +165,7 @@ public class ChatActivity extends AppCompatActivity {
                         String onlineStatus = "" + ds.child("onlinestatus").getValue();
                         if (onlineStatus.equals("online")) {
                             mStatusUser.setText(onlineStatus);
-                            stoptyping();
+                       //     stoptyping();
 
 
                         } else {
@@ -177,7 +177,7 @@ public class ChatActivity extends AppCompatActivity {
                             calendar.setTimeInMillis(Long.parseLong(onlineStatus));
                             String datetime = DateFormat.format("dd/MM/yyyy hh:mm a", calendar).toString();
                             mStatusUser.setText("Nhìn thấy lần cuối từ " + datetime);
-                            stoptyping();
+                          //  stoptyping();
                         }
                     }
 
@@ -338,10 +338,40 @@ public class ChatActivity extends AppCompatActivity {
 
             }
         });
+            //TODO:create  chatslist child in firebase datav=base
+        final DatabaseReference referenceChatlist=FirebaseDatabase.getInstance().getReference("Chatlist").child(myUid).child(hisUid);
+       referenceChatlist .addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    referenceChatlist.child("id").setValue(hisUid);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        final DatabaseReference referenceChatlist1=FirebaseDatabase.getInstance().getReference("Chatlist").child(myUid).child(hisUid);
+        referenceChatlist1.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    referenceChatlist1.child("id").setValue(myUid);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
-    //TODO: sendnotification on chatActivity
+    //TODO: sendnotification  with retrofit2  on chatActivity
     private void sendNotification(final String hisUid, final String username, final String message) {
         DatabaseReference allTokens = FirebaseDatabase.getInstance().getReference("Tokens");
         Query query = allTokens.orderByKey().equalTo(hisUid);
@@ -454,7 +484,7 @@ public class ChatActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
 
-        handler.removeCallbacks(runnable);
+     //   handler.removeCallbacks(runnable);
     }
 
 }

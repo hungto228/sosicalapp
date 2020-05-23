@@ -2,7 +2,7 @@ package com.example.ssocial_app.Model;
 
 public class ModelUsers {
     //users use name,email,search,phone, image, cover;
-    String username,email,search,phone, image, cover;
+    String username,email,search,phone, image, cover,onlinestatus,typingto;
   // @SerializedName("id")
     String id;
 
@@ -10,13 +10,15 @@ public class ModelUsers {
     public ModelUsers() {
     }
 
-    public ModelUsers(String username, String email, String search, String phone, String image, String cover, String id) {
+    public ModelUsers(String username, String email, String search, String phone, String image, String cover, String onlinestatus, String typingto, String id) {
         this.username = username;
         this.email = email;
         this.search = search;
         this.phone = phone;
         this.image = image;
         this.cover = cover;
+        this.onlinestatus = onlinestatus;
+        this.typingto = typingto;
         this.id = id;
     }
 
@@ -66,6 +68,22 @@ public class ModelUsers {
 
     public void setCover(String cover) {
         this.cover = cover;
+    }
+
+    public String getOnlinestatus() {
+        return onlinestatus;
+    }
+
+    public void setOnlinestatus(String onlinestatus) {
+        this.onlinestatus = onlinestatus;
+    }
+
+    public String getTypingto() {
+        return typingto;
+    }
+
+    public void setTypingto(String typingto) {
+        this.typingto = typingto;
     }
 
     public String getId() {

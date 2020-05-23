@@ -48,6 +48,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class PostDetailActivity extends AppCompatActivity {
     //progress dialog
@@ -383,15 +384,16 @@ public class PostDetailActivity extends AppCompatActivity {
         String timeStamp = String.valueOf(System.currentTimeMillis());
         //get reffrence Post,child "comment" contain  in Posts
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts").child(postId).child("Comments");
-
+//TODO: is problem error timestamp,uname
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("cid", timeStamp);
         hashMap.put("comment", comment);
-        hashMap.put("timestamp", timeStamp);
+        hashMap.put("timeStamp", timeStamp);
+        hashMap.put("udp",myDp);
+        hashMap.put("uname", myEmail);
         hashMap.put("uid", myUid);
         hashMap.put("uemail", myEmail);
-        hashMap.put("udp",myDp);
-        hashMap.put("uname", myName);
+
         // put this data in database, child time, setvalues hashmap
         reference.child(timeStamp).setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override

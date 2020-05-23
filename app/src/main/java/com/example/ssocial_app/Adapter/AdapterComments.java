@@ -47,18 +47,18 @@ public class AdapterComments extends RecyclerView.Adapter<AdapterComments.myHold
         String email=commentList.get(position).getUemail();
         String image=commentList.get(position).getUdp();
 
-        String cid=commentList.get(position).getcId();
+        String cid=commentList.get(position).getCid();
         String comment=commentList.get(position).getComment();
         String timestamp=commentList.get(position).getTimestamp();
-
-        // convert timestamp to dd/mm/yy
-        Calendar calendar = Calendar.getInstance(Locale.CANADA);
-        calendar.setTimeInMillis(Long.parseLong(timestamp));
-        String datetime = DateFormat.format("dd/MM/yyyy hh:mm a", calendar).toString();
+//
+//        // convert timestamp to dd/mm/yy
+//        Calendar calendar = Calendar.getInstance(Locale.CANADA);
+//        calendar.setTimeInMillis(Long.parseLong(timestamp));
+//        String datetime = DateFormat.format("dd/MM/yyyy hh:mm a", calendar).toString();
 
         //set data
         holder.mNameTV.setText(name);
-        holder.mTimeTV.setText(datetime);
+      //  holder.mTimeTV.setText(datetime);
         holder.mCommentTV.setText(comment);
 
         //set user dp
@@ -82,7 +82,7 @@ public class AdapterComments extends RecyclerView.Adapter<AdapterComments.myHold
             imgAvatar =itemView.findViewById(R.id.img_avatar);
             mNameTV=itemView.findViewById(R.id.tv_name);
             mCommentTV=itemView.findViewById(R.id.tv_Pcomment);
-            mTimeTV=itemView.findViewById(R.id.tv_time);
+        //    mTimeTV=itemView.findViewById(R.id.tv_time);
 
         }
     }
