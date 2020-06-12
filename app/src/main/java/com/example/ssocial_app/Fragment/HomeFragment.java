@@ -80,11 +80,12 @@ public class HomeFragment extends Fragment {
         postList = new ArrayList<>();
 
         loadPost();
-        if (!checknet()) {
 
-            Toast.makeText(getActivity(), "Không kết nối internet", Toast.LENGTH_SHORT).show();
-
-        }
+//        if (!checknet()) {
+//
+//            Toast.makeText(getActivity(), "Không kết nối internet", Toast.LENGTH_SHORT).show();
+//
+//        }
         return view;
 
     }
@@ -104,6 +105,7 @@ public class HomeFragment extends Fragment {
                     adapterPosts=new AdapterPosts(getActivity(),postList);
                     //set adapter in to recycleview
                     recyclerView.setAdapter(adapterPosts);
+
                     
                 }
             }

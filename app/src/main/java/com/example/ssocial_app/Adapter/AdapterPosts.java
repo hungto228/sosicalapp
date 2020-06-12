@@ -3,6 +3,9 @@ package com.example.ssocial_app.Adapter;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Gravity;
@@ -38,12 +41,15 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
@@ -56,14 +62,16 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
     //reference of post
     private DatabaseReference postReference;
 
-    boolean mProgressLike=false;
+    boolean mProgressLike = false;
 
     public AdapterPosts(Context context, List<ModelPost> postList) {
         this.context = context;
         this.postList = postList;
         myUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        likeReference=FirebaseDatabase.getInstance().getReference("Likes");
-        postReference=FirebaseDatabase.getInstance().getReference("Posts");
+        likeReference = FirebaseDatabase.getInstance().getReference("Likes");
+        postReference = FirebaseDatabase.getInstance().getReference("Posts");
+       likeReference.keepSynced(true);
+       postReference.keepSynced(true);
     }
 
     @NonNull
@@ -86,12 +94,12 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
         String udp = postList.get(position).getUdp();
 
         final String pid = postList.get(position).getPid();
-        String ptitle = postList.get(position).getPtitle();
-        String pdescription = postList.get(position).getPdescr();
+        final String ptitle = postList.get(position).getPtitle();
+        final String pdescription = postList.get(position).getPdescr();
         final String pimage = postList.get(position).getPimage();
-        String ptimestamp = postList.get(position).getPtime();
-        final String plikes=postList.get(position).getPlikes();
-        String pcomment=postList.get(position).getPcomment();
+        final String ptimestamp = postList.get(position).getPtime();
+        final String plikes = postList.get(position).getPlikes();
+        String pcomment = postList.get(position).getPcomment();
 
 
         // convert timestamp to dd/mm/yy
@@ -105,11 +113,12 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
         holder.mPtimeTv.setText(datetime);
         holder.mPtitleTv.setText(ptitle);
         holder.mPdescriptionTv.setText(pdescription);
-        holder.mPlikesTV.setText(plikes+"Thích");
-        holder.mPcommentTV.setText(pcomment+"Bình luận");
+        holder.mPlikesTV.setText(plikes + "Thích");
+        holder.mPcommentTV.setText(pcomment + "Bình luận");
 
         //set like for  post
-        setLike(holder,pid);
+        setLike(holder, pid);
+
         Log.d(TAG, "set data: ");
 
         //set user dp
@@ -120,8 +129,8 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
         //set post image
         //if there no image imgPicture.equal("noImage") => hide imageview
         if (pimage.equals("noImage")) {
-                //hide image view
-                holder.imgPpicture.setVisibility(View.GONE);
+            //hide image view
+            holder.imgPpicture.setVisibility(View.GONE);
 
         } else {
             //show  image view
@@ -146,29 +155,30 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
 //                Toast.makeText(context, "Likes", Toast.LENGTH_SHORT).show();
                 //get total number of likes for the post ,whose like  button clicked
                 //increase values by1,otherwire decreale values by 1
-                final int pLikes =Integer.parseInt(postList.get(position).getPlikes());
-                mProgressLike=true;
+                final int pLikes = Integer.parseInt(postList.get(position).getPlikes());
+                mProgressLike = true;
                 //get id of the post clicked
-                final String  postIde=postList.get(position).getPid();
+                final String postIde = postList.get(position).getPid();
                 likeReference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(mProgressLike){
-                            if (dataSnapshot.child(postIde).hasChild(myUid)){
+                        if (mProgressLike) {
+                            if (dataSnapshot.child(postIde).hasChild(myUid)) {
                                 // is liked  , so remove likeL
-                                postReference.child(postIde).child("plikes").setValue(""+(pLikes-1));
-                                 likeReference.child(postIde).child(myUid).removeValue();
-                                 //bug remove values
-                                 mProgressLike=false;
-                            }else{
+                                postReference.child(postIde).child("plikes").setValue("" + (pLikes - 1));
+                                likeReference.child(postIde).child(myUid).removeValue();
+                                //bug remove values
+                                mProgressLike = false;
+                            } else {
                                 //not like ,like it;
-                                postReference.child(postIde).child("plikes").setValue(""+(pLikes+1));
+                                postReference.child(postIde).child("plikes").setValue("" + (pLikes + 1));
                                 likeReference.child(postIde).child(myUid).setValue("Liked");
-                                mProgressLike=false;
-
+                                mProgressLike = false;
                             }
                         }
+
                     }
+
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -183,16 +193,28 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
             public void onClick(View v) {
 //                Toast.makeText(context, "comment", Toast.LENGTH_SHORT).show();
                 //start PostDetailActivity
-                Intent intent=new Intent(context, PostDetailActivity.class);
+                Intent intent = new Intent(context, PostDetailActivity.class);
                 //get delail  of post using id,id of post cliked
-                intent.putExtra("postId",pid);
+                intent.putExtra("postId", pid);
                 context.startActivity(intent);
             }
         });
+        //TODO: hander button Share click
         holder.mShareBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "share", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, "share", Toast.LENGTH_SHORT).show();
+                BitmapDrawable bitmapDrawable = (BitmapDrawable) holder.imgPpicture.getDrawable();
+                if (bitmapDrawable == null) {
+                    //post without image
+                    shareTextOnly(ptitle, pdescription);
+                } else {
+                    //post with image
+                    //convert to bitmap
+                    Bitmap bitmap = bitmapDrawable.getBitmap();
+                    shareImageAndText(ptitle, pdescription, bitmap);
+
+                }
             }
         });
         holder.proflieLayut.setOnClickListener(new View.OnClickListener() {
@@ -209,22 +231,71 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
 
 
     }
+
+    private void shareImageAndText(String ptitle, String pdescription, Bitmap bitmap) {
+        String shareBody = ptitle + "\n" + pdescription;
+        //  save image image in cache ,get the saved in image uri
+        Uri uri = saveImageToShare(bitmap);
+        //share intent
+        Intent intent=new Intent(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_STREAM,uri);
+        intent.putExtra(Intent.EXTRA_TEXT,shareBody);
+        intent.putExtra(Intent.EXTRA_SUBJECT,"Subject");
+        intent.setType("image/png");
+        context.startActivity(Intent.createChooser(intent,"Share via"));
+    }
+
+    private Uri saveImageToShare(Bitmap bitmap) {
+        //child images from res xml:path
+        File imageFolder = new File(context.getCacheDir(), "images");
+        Uri uri = null;
+        try {
+            //create if not exits, directory named by this  pathname.
+            imageFolder.mkdir();
+            File file=new File(imageFolder,"shared_image.png");
+            FileOutputStream stream=new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG,90,stream);
+            stream.flush();
+            stream.close();
+
+            uri= FileProvider.getUriForFile(context,"com.example.ssocial_app.fileprovider",file);
+
+        } catch (Exception e) {
+            Toast.makeText(context, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+        return uri;
+    }
+
+    private void shareTextOnly(String ptitle, String pdescription) {
+        String shareBody = ptitle + "\n" + pdescription;
+
+        //share intent
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        //case you share via email app
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Subject");
+        //text body
+        intent.putExtra(Intent.EXTRA_TEXT, shareBody);
+        //message to show in share dialog
+        context.startActivity(Intent.createChooser(intent, "Share via"));
+    }
+
     //TODO:set like for
     private void setLike(final Myholder holder, final String posKey) {
         likeReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.child(posKey).hasChild(myUid)){
-                   // user ha not liked this post
+                if (dataSnapshot.child(posKey).hasChild(myUid)) {
+                    // user ha not liked this post
                     //change icon button from like => liked
                     //change text like button  from like to liked
-                    holder.mLikeBtn.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_like_green,0,0,0);
+                    holder.mLikeBtn.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_like_green, 0, 0, 0);
                     holder.mLikeBtn.setText("Đã Thích");
-                }else {
+                } else {
                     //user ha not liked this post
                     //change icon button from like => liked
                     //change text like button  from like to liked
-                    holder.mLikeBtn.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_like_back,0,0,0);
+                    holder.mLikeBtn.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_like_back, 0, 0, 0);
                     holder.mLikeBtn.setText("Thích");
                 }
             }
@@ -240,36 +311,36 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
     private void showMoreOption(ImageButton imgMoreBtn, String uid, String myUid, final String pid, final String pimage) {
         //create popup menu having option delete // use add more option later
         PopupMenu popupMenu = new PopupMenu(context, imgMoreBtn, Gravity.END);
-       // Context wrapper = new ContextThemeWrapper(context, R.style.popUP);
+        // Context wrapper = new ContextThemeWrapper(context, R.style.popUP);
 
-     //   PopupMenu popup = new PopupMenu(wrapper, view);
+        //   PopupMenu popup = new PopupMenu(wrapper, view);
         //show delete option in only post with user
         if (uid.equals(myUid)) {
             //add item menu
             popupMenu.getMenu().add(Menu.NONE, 0, 0, "Xóa");
-            popupMenu.getMenu().add(Menu.NONE,1,0,"Chỉnh sửa");
+            popupMenu.getMenu().add(Menu.NONE, 1, 0, "Chỉnh sửa");
         }
-        popupMenu.getMenu().add(Menu.NONE,2,0,"Xem chi tiết");
+        popupMenu.getMenu().add(Menu.NONE, 2, 0, "Xem chi tiết");
         //item click
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 int id = item.getItemId();
-                if (id == 0){
+                if (id == 0) {
                     //delete click
-                    beginDelete(pid, pimage);}
-                else if(id==1) {
+                    beginDelete(pid, pimage);
+                } else if (id == 1) {
                     //edit clicked
                     //start AddPostActivity with key"editPost" and id  of the post clicked
-                    Intent intent=new Intent(context, AddPostActivity.class);
-                    intent.putExtra("key","editPost");
-                    intent.putExtra("editPostId",pid);
+                    Intent intent = new Intent(context, AddPostActivity.class);
+                    intent.putExtra("key", "editPost");
+                    intent.putExtra("editPostId", pid);
                     context.startActivity(intent);
-                }else if (id==2){
+                } else if (id == 2) {
                     //start PostDetailActivity
-                    Intent intent=new Intent(context, PostDetailActivity.class);
+                    Intent intent = new Intent(context, PostDetailActivity.class);
                     //get delail  of post using id,id of post cliked
-                    intent.putExtra("posiID",pid);
+                    intent.putExtra("posiID", pid);
                     context.startActivity(intent);
                 }
                 return false;
@@ -375,7 +446,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
     class Myholder extends RecyclerView.ViewHolder {
         //view from row_post
         ImageView imgUpicture, imgPpicture;
-        TextView mUNameTv, mPtimeTv, mPtitleTv, mPdescriptionTv, mPlikesTV,mPcommentTV;
+        TextView mUNameTv, mPtimeTv, mPtitleTv, mPdescriptionTv, mPlikesTV, mPcommentTV;
         ImageButton imgMoreBtn;
         Button mLikeBtn, mCommentBtn, mShareBtn;
         LinearLayout proflieLayut;
@@ -393,7 +464,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.Myholder> {
             mPtitleTv = itemView.findViewById(R.id.tv_Ptitle);
             mPdescriptionTv = itemView.findViewById(R.id.tv_Pdescripsion);
             mPlikesTV = itemView.findViewById(R.id.tv_Plike);
-            mPcommentTV=itemView.findViewById(R.id.tv_Pcomment);
+            mPcommentTV = itemView.findViewById(R.id.tv_Pcomment);
 
             mLikeBtn = itemView.findViewById(R.id.btn_PLike);
             mCommentBtn = itemView.findViewById(R.id.btn_Pcomment);

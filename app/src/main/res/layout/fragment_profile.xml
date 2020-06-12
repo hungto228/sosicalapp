@@ -94,7 +94,7 @@
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
         android:src="@drawable/ic_edit"
-        app:backgroundTint="#520E85" />
+        app:backgroundTint="#15BACF" />
 
 
 </RelativeLayout>

@@ -612,7 +612,7 @@ final String pcomment="0";
         });
         builder.show();
     }
-
+    //TODO: pick camere and gallery with all
     private void pickFromCamera() {
         //intent pick camera form  camera
         ContentValues cv = new ContentValues();
@@ -621,8 +621,8 @@ final String pcomment="0";
         image_uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, cv);
 
         //  Intent intent = new Intent();
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        //  Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+      //  Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+          Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
         intent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri);
 
         startActivityForResult(intent, IMAGE_PINK_CAMERA_CODE);
@@ -688,15 +688,13 @@ final String pcomment="0";
             break;
             case STORAGE_REQUEST_CODE: {
                 if (grantResults.length > 0) {
-                    if (grantResults.length > 0) {
-                        boolean storageAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+
+                        boolean storageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                         if (storageAccepted) {
                             pickFromGallery();
                         } else {
                             Toast.makeText(this, "Gallery  cần thiết", Toast.LENGTH_SHORT).show();
                         }
-                    } else {
-                    }
                 }
             }
             break;

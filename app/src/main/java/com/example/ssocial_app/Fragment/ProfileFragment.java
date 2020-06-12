@@ -427,8 +427,6 @@ public class ProfileFragment extends Fragment {
                     } else {
                         Toast.makeText(getActivity(), "Gallery  cần thiết", Toast.LENGTH_SHORT).show();
                     }
-
-
                 }
             }
             break;

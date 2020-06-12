@@ -24,6 +24,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.util.HashMap;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -69,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setOnNavigationItemSelectedListener(selectedListener);
 // default on start
 
-        getSupportActionBar().setTitle("Home");
+        getSupportActionBar().setTitle("Trang chủ");
         HomeFragment homeFragment = new HomeFragment();
         FragmentTransaction ft1 = getSupportFragmentManager().beginTransaction();
         ft1.replace(R.id.content, homeFragment, "");
@@ -101,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
                         case R.id.nav_home:
                             // home fragment
                             //  actionBar.setTitle("Home");
-                            getSupportActionBar().setTitle("Home ");
+                            getSupportActionBar().setTitle("Trang chủ ");
                             HomeFragment homeFragment = new HomeFragment();
                             FragmentTransaction ft1 = getSupportFragmentManager().beginTransaction();
                             ft1.replace(R.id.content, homeFragment, "");
@@ -110,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
                         case R.id.nav_profile:
                             // profile fragment
                             // actionBar.setTitle("Profile");
-                            getSupportActionBar().setTitle("Profile ");
+                            getSupportActionBar().setTitle("Thông tin ");
                             ProfileFragment profileFragment = new ProfileFragment();
                             FragmentTransaction ft2 = getSupportFragmentManager().beginTransaction();
                             ft2.replace(R.id.content, profileFragment, "");
@@ -120,14 +122,14 @@ public class MainActivity extends AppCompatActivity {
                         case R.id.nav_users:
                             // users fragment
                             // actionBar.setTitle("Users");
-                            getSupportActionBar().setTitle("Users ");
+                            getSupportActionBar().setTitle("Danh bạ ");
                             UsersFragment usersFragment = new UsersFragment();
                             FragmentTransaction ft3 = getSupportFragmentManager().beginTransaction();
                             ft3.replace(R.id.content, usersFragment, "");
                             ft3.commit();
                             return true;
                         case R.id.nav_chat:
-                            getSupportActionBar().setTitle("Chat");
+                            getSupportActionBar().setTitle("Tin nhắn");
                             ChatListFragment chatListFragment = new ChatListFragment();
                             FragmentTransaction ft4 = getSupportFragmentManager().beginTransaction();
                             ft4.replace(R.id.content, chatListFragment, "");

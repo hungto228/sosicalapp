@@ -51,8 +51,9 @@ public class ThereProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_there_profile);
+   //     setTheme(R.style.light_noActionBar);
         ActionBar actionBar=getSupportActionBar();
-        actionBar.setTitle("Profile");
+        actionBar.setTitle("Thông tin người dùng");
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2E9AFE")));
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);

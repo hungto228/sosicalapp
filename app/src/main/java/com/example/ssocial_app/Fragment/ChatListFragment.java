@@ -113,7 +113,7 @@ public class ChatListFragment extends Fragment {
                 recyclerView.setAdapter(adapterChatlist);
 
                 //set last message
-                for (int i = 0; i <usersList.size() ; i++) {
+                for (int i = 0; i < usersList.size(); i++) {
                     lastMessage(usersList.get(i).getId());
 
                 }
@@ -129,28 +129,28 @@ public class ChatListFragment extends Fragment {
     }
 
     private void lastMessage(final String userId) {
-        DatabaseReference reference=FirebaseDatabase.getInstance().getReference("Chats");
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String lastmessage="default";
-                for(DataSnapshot ds:dataSnapshot.getChildren()){
-                    ModelChat chat=ds.getValue(ModelChat.class);
-                    if(chat==null){
+                String lastmessage = "default";
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    ModelChat chat = ds.getValue(ModelChat.class);
+                    if (chat == null) {
                         continue;
                     }
-                    String sender=chat.getSender();
-                    String receiver=chat.getReceiver();
-                    if(sender==null||receiver==null){
+                    String sender = chat.getSender();
+                    String receiver = chat.getReceiver();
+                    if (sender == null || receiver == null) {
                         continue;
                     }
-                    if (chat.getReceiver().equals(currentUser.getUid())&&chat.getSender().equals(userId)
-                    ||chat.getReceiver().equals(userId)&&chat.getSender().equals(currentUser.getUid())
-                    ){
-                        lastmessage=chat.getMessage();
+                    if (chat.getReceiver().equals(currentUser.getUid()) && chat.getSender().equals(userId)
+                            || chat.getReceiver().equals(userId) && chat.getSender().equals(currentUser.getUid())
+                    ) {
+                        lastmessage = chat.getMessage();
                     }
                 }
-                adapterChatlist.setLastMessageHasmap(userId,lastmessage);
+                adapterChatlist.setLastMessageHasmap(userId, lastmessage);
                 adapterChatlist.notifyDataSetChanged();
             }
 
@@ -184,7 +184,7 @@ public class ChatListFragment extends Fragment {
         inflater.inflate(R.menu.menu_search, menu);
         //hide add post icon form fragment
         menu.findItem(R.id.menu_Spost).setVisible(false);
-
+        menu.findItem(R.id.menu_Ssearch).setVisible(false);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
